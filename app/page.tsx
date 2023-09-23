@@ -1,24 +1,30 @@
-'use client';
-
-import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { AppRoutes } from '@/consts/enums';
+import { checkAuth } from '@/lib/utils';
+import React from 'react';
 
-export default function Home() {
-  const session = useSession();
+export default async function Home() {
+  await checkAuth({ forApp: true });
 
-  console.log(session);
   return (
-    <main>
-      <div className="container">
-        <h1>Добро пожаловать на Дискор клон сайта</h1>
-        <p>
-          <Link href={AppRoutes.Signup}>Зарегистрировать в два клика</Link>
-        </p>
-        <p>
-          <Link href={AppRoutes.Signin}>Уже бывали ?</Link>
-        </p>
-      </div>
-    </main>
+    <div className="flex min-h-screen flex-col">
+      <main className="flex items-center">
+        <div className="container flex justify-center">
+          <div className="space-y-4 p-2">
+            <h1 className="text-4xl">Добро пожаловать на дискор-клон сайт</h1>
+            <p>
+              <Link className="mx-auto block text-center" href={AppRoutes.Signup}>
+                Зарегистрироваться в два клика
+              </Link>
+            </p>
+            <p>
+              <Link className="mx-auto block text-center" href={AppRoutes.Signin}>
+                Уже бывали ?
+              </Link>
+            </p>
+          </div>
+        </div>
+      </main>
+    </div>
   );
 }

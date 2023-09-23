@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -47,6 +44,9 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  server        Server[]
+  member        Member[]
+  channel       Channel[]
 }
 
 model VerificationToken {
@@ -57,36 +57,22 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Profile {
-  id        String    @id @default(uuid())
-  userd     String    @unique
-  name      String
-  imageUrl  String    @db.Text
-  email     String    @db.Text
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  Server    Server[]
-  Member    Member[]
-  Channel   Channel[]
-}
-
 model Server {
   id         String @id @default(uuid())
-  userd      String @unique
   name       String
   imageUrl   String @db.Text
-  inviteCode String @db.Text
+  inviteCode String @unique
 
-  profileId String
-  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Member  Member[]
-  Channel Channel[]
+  member  Member[]
+  channel Channel[]
 
-  @@index([profileId])
+  @@index([userId])
 }
 
 enum Role {
@@ -99,16 +85,16 @@ model Member {
   id   String @id @default(uuid())
   role Role   @default(GUEST)
 
-  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId String
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   serverId String
-  server   Server @relation(fields: [serverId], references: [id])
+  server   Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([profileId])
+  @@index([userId])
   @@index([serverId])
 }
 
@@ -123,8 +109,8 @@ model Channel {
   type ChannelType @default(TEXT)
   name String
 
-  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId String
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   serverId String
   server   Server @relation(fields: [serverId], references: [id])
@@ -132,6 +118,6 @@ model Channel {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([profileId])
+  @@index([userId])
   @@index([serverId])
 }

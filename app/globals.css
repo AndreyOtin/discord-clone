@@ -2,7 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+@media (prefers-color-scheme: dark) {
+    html {
+        color-scheme: dark;
+    }
+}
+
+
 @layer base {
+    html,
+    body {
+        height: 100%;
+    }
+
     :root {
         --background: 0 0% 100%;
         --foreground: 20 14.3% 4.1%;

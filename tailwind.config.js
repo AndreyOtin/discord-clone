@@ -81,9 +81,15 @@ module.exports = {
         'accordion-up': {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: 0 }
+        },
+        'spin-slow': {
+          '0%': { transform: 'scale(1) rotate(0)' },
+          '50%': { transform: 'scale(1.5) rotate(180deg)' },
+          '100%': { transform: 'scale(1) rotate(360deg)' },
         }
       },
       animation: {
+        'spin-slow': 'spin-slow 1.8s linear infinite',
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out'
       }

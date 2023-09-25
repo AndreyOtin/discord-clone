@@ -3,7 +3,9 @@
 import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import CreateServer from '@/components/modals/create-server';
 import InvitePeople from '@/components/modals/invite-people';
-import { Server } from '@prisma/client';
+import EditServer from '@/components/modals/edit-server';
+import ManageMembers from '@/components/modals/manage-members';
+import { ServerWithLinksAndUser } from '@/types/prisma';
 
 const MODALS = [
   'creatServer',
@@ -15,7 +17,7 @@ const MODALS = [
 ] as const;
 
 interface Data {
-  server?: Server;
+  server?: ServerWithLinksAndUser;
 }
 
 interface ModalContext {
@@ -61,6 +63,8 @@ function ModalProvider({ children }: { children: ReactNode }) {
       {children}
       <CreateServer />
       <InvitePeople />
+      <EditServer />
+      <ManageMembers />
     </Context.Provider>
   );
 }

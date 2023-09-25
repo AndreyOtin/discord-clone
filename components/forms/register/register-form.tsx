@@ -16,6 +16,12 @@ import { cn } from '@/lib/utils';
 
 const schema = z.object({
   email: z.string().email({ message: 'Введите валидный емайл' }),
+  name: z.string().min(2, { message: 'Введите мин 2 символа' }),
+  password: z.string().min(3, { message: 'Введите мин 3 символа' })
+});
+
+const signInSchema = z.object({
+  email: z.string().email({ message: 'Введите валидный емайл' }),
   password: z.string().min(3, { message: 'Введите мин 3 символа' })
 });
 
@@ -27,8 +33,8 @@ type RegisterFormProps = {
 
 function RegisterForm(props: RegisterFormProps) {
   const form = useForm<Schema>({
-    resolver: zodResolver(schema),
-    defaultValues: { email: '', password: '' }
+    resolver: zodResolver(props.variant === 'signin' ? signInSchema : schema),
+    defaultValues: { email: '', password: '', name: '' }
   });
   const searchParams = useSearchParams();
   const [error, setError] = useState(false);
@@ -112,8 +118,11 @@ function RegisterForm(props: RegisterFormProps) {
         <FormField
           control={form.control}
           name="email"
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <FormItem className={'mb-3'}>
+              {fieldState.error && (
+                <p className={'text-destructive text-sm'}>{fieldState.error.message}</p>
+              )}
               <FormLabel>Введите eмайл</FormLabel>
               <FormControl>
                 <Input {...field} className={'border-primary'} />
@@ -121,11 +130,31 @@ function RegisterForm(props: RegisterFormProps) {
             </FormItem>
           )}
         />
+        {props.variant === 'signup' && (
+          <FormField
+            control={form.control}
+            name={'name'}
+            render={({ field, fieldState }) => (
+              <FormItem className={'mb-3'}>
+                {fieldState.error && (
+                  <p className={'text-destructive text-sm'}>{fieldState.error.message}</p>
+                )}
+                <FormLabel>Введите имя</FormLabel>
+                <FormControl>
+                  <Input {...field} type={'text'} className={'border-primary'} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        )}
         <FormField
           control={form.control}
           name="password"
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <FormItem>
+              {fieldState.error && (
+                <p className={'text-destructive text-sm'}>{fieldState.error.message}</p>
+              )}
               <FormLabel>Введите пароль</FormLabel>
               <FormControl>
                 <Input {...field} type={'password'} className={'border-primary'} />

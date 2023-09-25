@@ -23,10 +23,10 @@ export async function checkAuth({ forApp = false }: { forApp?: boolean } = {}) {
   return session?.user;
 }
 
-export const throttle = (cb: Function, delay: number) => {
+export const throttle = (cb: (...args: []) => void, delay: number) => {
   let lastExecuted = false;
 
-  return function (...args: any[]) {
+  return function (...args: []) {
     if (lastExecuted) {
       return;
     }

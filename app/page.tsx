@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { AppRoutes } from '@/consts/enums';
 import { checkAuth } from '@/lib/utils';
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 
 export default async function Home() {
   await checkAuth({ forApp: true });

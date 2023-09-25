@@ -96,4 +96,8 @@
     .clip {
         clip: rect(0 0 0 0);
     }
+
+    .break-word {
+        word-break: break-word;
+    }
 }

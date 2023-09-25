@@ -1,13 +1,13 @@
 import React from 'react';
-import ServerMenuSidebar from '@/components/server-menu-sidebar/server-menu-sidebar-props';
 import { findServer } from '@/lib/prisma/server';
-import NotFound from 'next/dist/client/components/not-found-error';
+import { notFound } from 'next/navigation';
+import ServerMenuSidebar from '@/components/server-menu-sidebar/server-menu-sidebar-props';
 
 async function Server({ params }: { params: { id: string } }) {
   const server = await findServer(params.id);
 
   if (!server) {
-    return NotFound();
+    return notFound();
   }
 
   return (

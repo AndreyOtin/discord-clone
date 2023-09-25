@@ -11,8 +11,20 @@ export const findUserServers = async (userId: string): Promise<ServerWithLinks[]
       }
     },
     include: {
-      member: true,
+      member: {
+        include: {
+          user: true
+        },
+        orderBy: {
+          user: {
+            name: 'asc'
+          }
+        }
+      },
       channel: true
+    },
+    orderBy: {
+      name: 'asc'
     }
   });
 };
@@ -46,6 +58,11 @@ export const findServer = async (serverId: string): Promise<ServerWithLinksAndUs
       member: {
         include: {
           user: true
+        },
+        orderBy: {
+          user: {
+            name: 'asc'
+          }
         }
       },
       channel: true

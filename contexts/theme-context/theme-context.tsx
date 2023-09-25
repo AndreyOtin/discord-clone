@@ -14,13 +14,16 @@ const Context = createContext<ThemeContext | null>(null);
 
 function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<ThemeContext['theme']>(() => {
-    const theme = localStorage.getItem('theme');
+    let theme = localStorage.getItem('theme');
     if (typeof theme === 'string' && isIncluded(theme, THEMES)) {
       return theme;
     }
 
-    localStorage.setItem('theme', 'dark');
-    return 'dark';
+    const res = window.matchMedia('(prefers-color-scheme: dark)');
+    theme = res.matches ? 'dark' : 'light';
+    localStorage.setItem('theme', theme);
+
+    return theme as ThemeContext['theme'];
   });
 
   useEffect(() => {

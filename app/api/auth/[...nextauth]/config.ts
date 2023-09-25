@@ -19,12 +19,13 @@ export const authConfig: AuthOptions = {
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        email: { label: 'Email', type: 'text', placeholder: 'jsmith', required: true },
+        name: { label: 'name', type: 'text' },
+        email: { label: 'Email', type: 'text' },
         password: { label: 'Password', type: 'password' },
         variant: { type: 'text' }
       },
       async authorize(credentials) {
-        const { email, password, variant } = credentials as NonNullable<typeof credentials>;
+        const { email, password, variant, name } = credentials as NonNullable<typeof credentials>;
 
         if (variant === RegisterFormVariant.Signin) {
           const user = await prisma.user.findFirst({
@@ -43,22 +44,23 @@ export const authConfig: AuthOptions = {
             return null;
           }
 
-          const { password: p, ...rest } = user;
+          user.password = null;
 
-          return { ...rest };
+          return user;
         }
 
         try {
           const newUser = await prisma.user.create({
             data: {
               email,
-              password: hashPassword(password)
+              password: hashPassword(password),
+              name
             }
           });
 
-          const { password: p, ...rest } = newUser;
+          newUser.password = null;
 
-          return { ...rest };
+          return newUser;
         } catch (e) {
           return null;
         }

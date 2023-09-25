@@ -18,13 +18,13 @@ import {
   Users
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Role, Server } from '@prisma/client';
+import { Role } from '@prisma/client';
 import { useModalContext } from '@/contexts/modal-context/modal-context';
 import { ServerWithLinksAndUser } from '@/types/prisma';
 import { useSession } from 'next-auth/react';
 
 type Menu = {
-  onClick: (data: { server: Server }) => void;
+  onClick: (data: { server: ServerWithLinksAndUser }) => void;
   text: string;
   Icon: ForwardRefExoticComponent<LucideProps>;
   separator?: boolean;
@@ -46,7 +46,7 @@ const createMenu = (cb: {
   };
 
   const editMembers: Menu = {
-    onClick: (data) => cb.onClick('invite', data),
+    onClick: (data) => cb.onClick('editMembers', data),
     text: 'Настройка участников',
     Icon: Users
   };

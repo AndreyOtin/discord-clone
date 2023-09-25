@@ -25,8 +25,6 @@ function InvitePeople() {
   const [isLoading, setIsLoading] = useState(false);
   const to404 = use404();
 
-
-
   const handleCopyClick = () => {
     setCopy(true);
     navigator.clipboard.writeText(inviteUrl);
@@ -47,15 +45,11 @@ function InvitePeople() {
       body: JSON.stringify({ serverId: data.server?.id })
     });
 
-
-
     if (response.ok) {
       const responseData = await response.json();
       openModal('invite', { server: responseData.server });
     } else {
-      const responseData = await response.text();
-      console.log(responseData);
-      // to404();
+      to404();
     }
 
     setIsLoading(false);
@@ -74,7 +68,7 @@ function InvitePeople() {
             </Button>
           </div>
         </DialogHeader>
-        <DialogFooter className={''}>
+        <DialogFooter>
           <Button
             size={'sm'}
             variant={'link'}

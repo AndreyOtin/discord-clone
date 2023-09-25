@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,8 @@ import { X } from 'lucide-react';
 import { ApiRoutes, AppRoutes } from '@/consts/enums';
 import { useRouter } from 'next/navigation';
 import { useModalContext } from '@/contexts/modal-context/modal-context';
+import { use404 } from '@/hooks/utils';
+import { Server } from '@prisma/client';
 
 const defaultValues = {
   serverName: '',
@@ -17,27 +19,48 @@ const defaultValues = {
 
 export type CreateServerFormBody = typeof defaultValues;
 
-function CreateServerForm() {
+type CreateServerFormProps = {
+  server?: Server;
+};
+
+function CreateServerForm({ server }: CreateServerFormProps) {
   const form = useForm({
     defaultValues
   });
   const router = useRouter();
   const { closeModal } = useModalContext();
+  const to404 = use404();
+
+  useEffect(() => {
+    if (server) {
+      form.setValue('serverImage', server.imageUrl);
+      form.setValue('serverName', server.name);
+    }
+  }, []);
 
   const onSubmit: SubmitHandler<CreateServerFormBody> = async (values) => {
-    const res = await fetch(ApiRoutes.CreateServer, {
+    const postConfig: RequestInit = {
       method: 'POST',
       body: JSON.stringify(values)
-    });
+    };
+
+    const patchConfig: RequestInit = {
+      method: 'PATCH',
+      body: JSON.stringify({
+        serverId: server?.id,
+        ...values
+      })
+    };
+
+    const res = await fetch(ApiRoutes.CreateServer, server ? patchConfig : postConfig);
 
     if (res.ok) {
       const data = await res.json();
-      router.push(AppRoutes.App + `/${data.serverId}`);
+      router.push(AppRoutes.App + `/${data.id}`);
       router.refresh();
       closeModal();
     } else {
-      const r = await res.json();
-      console.log(r);
+      to404();
     }
   };
 
@@ -65,7 +88,6 @@ function CreateServerForm() {
                     onClientUploadComplete={(file) => {
                       field.onChange(file?.[0].url);
                     }}
-                    config={{ mode: 'manual' }}
                     content={{
                       label: 'Перетащите или выберите картинку для сервера',
                       allowedContent: 'картинкa не более 4 Mb',
@@ -94,7 +116,7 @@ function CreateServerForm() {
           )}
         />
         <Button className={'mx-auto my-4 block'} disabled={form.formState.isSubmitting}>
-          Создать
+          {server ? 'Обновить' : 'Создать'}
         </Button>
       </form>
     </Form>

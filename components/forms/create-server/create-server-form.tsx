@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { X } from 'lucide-react';
 import { ApiRoutes, AppRoutes } from '@/consts/enums';
 import { useRouter } from 'next/navigation';
+import { useModalContext } from '@/contexts/modal-context/modal-context';
 
 const defaultValues = {
   serverName: '',
@@ -21,6 +22,7 @@ function CreateServerForm() {
     defaultValues
   });
   const router = useRouter();
+  const { closeModal } = useModalContext();
 
   const onSubmit: SubmitHandler<CreateServerFormBody> = async (values) => {
     const res = await fetch(ApiRoutes.CreateServer, {
@@ -30,7 +32,9 @@ function CreateServerForm() {
 
     if (res.ok) {
       const data = await res.json();
-      router.push(AppRoutes.Server + `/${data.serverId}`);
+      router.push(AppRoutes.App + `/${data.serverId}`);
+      router.refresh();
+      closeModal();
     } else {
       const r = await res.json();
       console.log(r);
@@ -84,12 +88,14 @@ function CreateServerForm() {
             <FormItem>
               <FormLabel>Введите название сервера</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} minLength={3} required />
               </FormControl>
             </FormItem>
           )}
         />
-        <Button className={'mx-auto my-4 block'}>Создать</Button>
+        <Button className={'mx-auto my-4 block'} disabled={form.formState.isSubmitting}>
+          Создать
+        </Button>
       </form>
     </Form>
   );

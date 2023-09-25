@@ -22,3 +22,22 @@ export async function checkAuth({ forApp = false }: { forApp?: boolean } = {}) {
 
   return session?.user;
 }
+
+export const throttle = (cb: Function, delay: number) => {
+  let lastExecuted = false;
+
+  return function (...args: any[]) {
+    if (lastExecuted) {
+      return;
+    }
+
+    lastExecuted = true;
+    setTimeout(() => {
+      lastExecuted = false;
+      cb(...args);
+    }, delay);
+  };
+};
+
+export const isIncluded = <T extends readonly string[]>(str: string, values: T): str is T[number] =>
+  values.includes(str);

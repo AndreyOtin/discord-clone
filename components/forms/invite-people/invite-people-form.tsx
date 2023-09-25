@@ -7,12 +7,11 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { signIn } from 'next-auth/react';
-import { AppRoutes, RegisterFormVariant } from '@/consts/enums';
+import { AppRoutes } from '@/consts/enums';
 import { Separator } from '@/components/ui/separator';
-import { Github, RefreshCw } from 'lucide-react';
+import { Github } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
-import { cn } from '@/lib/utils';
+import { useEffect, useState } from 'react';
 
 const schema = z.object({
   email: z.string().email({ message: 'Введите валидный емайл' }),
@@ -21,11 +20,7 @@ const schema = z.object({
 
 type Schema = z.infer<typeof schema>;
 
-type RegisterFormProps = {
-  variant: RegisterFormVariant;
-};
-
-function RegisterForm(props: RegisterFormProps) {
+function InvitePeopleForm() {
   const form = useForm<Schema>({
     resolver: zodResolver(schema),
     defaultValues: { email: '', password: '' }
@@ -33,12 +28,10 @@ function RegisterForm(props: RegisterFormProps) {
   const searchParams = useSearchParams();
   const [error, setError] = useState(false);
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit: SubmitHandler<Schema> = async (value) => {
     const res = await signIn('credentials', {
       ...value,
-      variant: props.variant,
       redirect: false,
       callbackUrl: AppRoutes.App
     });
@@ -51,19 +44,9 @@ function RegisterForm(props: RegisterFormProps) {
   };
 
   const handleGithubClick = async () => {
-    setIsLoading(true);
-    const res = await signIn('github', {
-      callbackUrl: AppRoutes.App,
-      redirect: false
+    await signIn('github', {
+      callbackUrl: AppRoutes.App
     });
-
-    if (res && res.error) {
-      setError(true);
-    } else {
-      return router.push(AppRoutes.App);
-    }
-
-    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -80,28 +63,8 @@ function RegisterForm(props: RegisterFormProps) {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex w-[300px] flex-col border border-primary bg-background p-8"
       >
-        {error && !searchParams.get('error') ? (
-          <div className="mb-4 text-center text-destructive">
-            {props.variant === 'signin' ? (
-              <span>Введен неверный пароль или емайл</span>
-            ) : (
-              <span>Такой емайл уже сущуствует</span>
-            )}
-          </div>
-        ) : (
-          error && (
-            <div className="mb-4 text-center text-destructive">
-              <span>Ошибка с Github</span>
-            </div>
-          )
-        )}
         <Button onClick={handleGithubClick} type="button" className="flex space-x-2">
-          {isLoading ? (
-            <RefreshCw className={cn('animate-spin')} />
-          ) : (
-            <Github absoluteStrokeWidth />
-          )}
-
+          <Github absoluteStrokeWidth />
           <span>Github</span>
         </Button>
         <Separator className="relative my-8 bg-primary">
@@ -133,12 +96,10 @@ function RegisterForm(props: RegisterFormProps) {
             </FormItem>
           )}
         />
-        <Button className="mt-5 min-w-full self-center">
-          {form.formState.isSubmitting ? <RefreshCw className={cn('animate-spin')} /> : 'Отправить'}
-        </Button>
+        <Button className="mt-5 self-center">Отправить</Button>
       </form>
     </Form>
   );
 }
 
-export default RegisterForm;
+export default InvitePeopleForm;

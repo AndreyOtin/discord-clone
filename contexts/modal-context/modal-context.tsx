@@ -2,13 +2,27 @@
 
 import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import CreateServer from '@/components/modals/create-server';
+import InvitePeople from '@/components/modals/invite-people';
+import { Server } from '@prisma/client';
 
-const MODALS = ['creatServer'] as const;
+const MODALS = [
+  'creatServer',
+  'invite',
+  'createChannel',
+  'editMembers',
+  'editServer',
+  'deleteServer'
+] as const;
+
+interface Data {
+  server?: Server;
+}
 
 interface ModalContext {
   modal: (typeof MODALS)[number] | null;
-  openModal: (modal: Modals) => void;
+  openModal: (modal: Modals, data?: Data) => void;
   closeModal: () => void;
+  data: Data;
 }
 
 type Modals = ModalContext['modal'];
@@ -16,7 +30,8 @@ type Modals = ModalContext['modal'];
 const Context = createContext<ModalContext | null>(null);
 
 function ModalProvider({ children }: { children: ReactNode }) {
-  const [modal, setModal] = useState<Modals | null>(null);
+  const [modal, setModal] = useState<Modals>(null);
+  const [data, setData] = useState<Data>({});
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -25,15 +40,17 @@ function ModalProvider({ children }: { children: ReactNode }) {
 
   const values = useMemo(() => {
     return {
+      data,
       modal,
-      openModal(modal: Modals) {
+      openModal(modal: Modals, data?: Data) {
         setModal(modal);
+        setData(data || {});
       },
       closeModal() {
         setModal(null);
       }
     };
-  }, [modal]);
+  }, [modal, data]);
 
   if (!mounted) {
     return null;
@@ -43,6 +60,7 @@ function ModalProvider({ children }: { children: ReactNode }) {
     <Context.Provider value={values}>
       {children}
       <CreateServer />
+      <InvitePeople />
     </Context.Provider>
   );
 }

@@ -11,5 +11,6 @@ export enum RegisterFormVariant {
 }
 
 export enum ApiRoutes {
-  CreateServer = '/api/create-server'
+  CreateServer = '/api/create-server',
+  UpdateInviteCode = '/api/update-server'
 }

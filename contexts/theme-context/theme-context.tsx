@@ -1,11 +1,9 @@
 'use client';
 
 import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
+import { isIncluded } from '@/lib/utils';
 
 const THEMES = ['dark', 'light'] as const;
-
-const isIncluded = <T extends readonly string[]>(str: string, values: T): str is T[number] =>
-  values.includes(str);
 
 interface ThemeContext {
   theme: (typeof THEMES)[number];

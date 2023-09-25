@@ -1,12 +1,15 @@
 import React, { ReactNode } from 'react';
-import Sidebar from '@/components/sidebar/sidebar';
-import UserMenu from '@/components/user-menu/user-menu';
+import ActionsSidebar from '@/components/actions-sidebar/actions-sidebar';
+import { checkAuth } from '@/lib/utils';
+import { findUserServers } from '@/lib/prisma/server';
 
-function Layout({ children }: { children: ReactNode }) {
+async function Layout({ children }: { children: ReactNode }) {
+  const session = await checkAuth();
+  const servers = await findUserServers(session?.userId || '');
+
   return (
     <div className="grid min-h-screen grid-cols-[80px_200px_1fr]">
-      <Sidebar className={'px-20'} />
-      <UserMenu />
+      <ActionsSidebar servers={servers} />
       {children}
     </div>
   );

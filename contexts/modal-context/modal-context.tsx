@@ -6,6 +6,8 @@ import InvitePeople from '@/components/modals/invite-people';
 import EditServer from '@/components/modals/edit-server';
 import ManageMembers from '@/components/modals/manage-members';
 import { ServerWithLinksAndUser } from '@/types/prisma';
+import CreateChannel from '@/components/modals/create-channel';
+import LeaveServer from '@/components/modals/leave-server';
 
 const MODALS = [
   'creatServer',
@@ -13,7 +15,8 @@ const MODALS = [
   'createChannel',
   'editMembers',
   'editServer',
-  'deleteServer'
+  'deleteServer',
+  'leaveServer'
 ] as const;
 
 interface Data {
@@ -65,6 +68,8 @@ function ModalProvider({ children }: { children: ReactNode }) {
       <InvitePeople />
       <EditServer />
       <ManageMembers />
+      <CreateChannel />
+      <LeaveServer />
     </Context.Provider>
   );
 }

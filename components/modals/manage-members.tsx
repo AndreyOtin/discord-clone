@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { startTransition, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -44,10 +44,10 @@ function ManageMembers() {
     [Role.ADMIN]: <ShieldAlert className={'aspect-square w-4 text-red-500'} />
   };
 
-  const handleRoleClick = async (memberId: string, role: Role) => {
+  const handleMenuClick = async (memberId: string, role?: Role) => {
     setLoadingId(memberId);
-    const response = await fetch(ApiRoutes.UpdateRole, {
-      method: 'PATCH',
+    const response = await fetch(ApiRoutes.Members, {
+      method: role ? 'PATCH' : 'DELETE',
       body: JSON.stringify({
         serverId: data.server?.id,
         memberId,
@@ -57,7 +57,10 @@ function ManageMembers() {
 
     if (response.ok) {
       const res = await response.json();
-      openModal('editMembers', { server: res });
+
+      startTransition(() => {
+        openModal('editMembers', { server: res });
+      });
     }
 
     setLoadingId('');
@@ -89,7 +92,7 @@ function ManageMembers() {
                   {m.userId !== data.server?.userId && loadingId !== m.id && (
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button size={'icon'} variant={'ghost'} className={'ml-auto'}>
+                        <Button size={'icon'} variant={'ghost'} className={'ml-auto mr-2'}>
                           <span className={'sr-only'}>Действия</span>
                           <MoreVertical />
                         </Button>
@@ -103,7 +106,7 @@ function ManageMembers() {
                               <DropdownMenuSubContent>
                                 <DropdownMenuItem className={'justify-items-start'}>
                                   <button
-                                    onClick={() => handleRoleClick(m.id, 'GUEST')}
+                                    onClick={() => handleMenuClick(m.id, 'GUEST')}
                                     className={'w-full flex items-center gap-x-1'}
                                   >
                                     <Shield className={'w-4 aspect-square'} />
@@ -117,7 +120,7 @@ function ManageMembers() {
                                 </DropdownMenuItem>
                                 <DropdownMenuItem className={'justify-items-start'}>
                                   <button
-                                    onClick={() => handleRoleClick(m.id, 'MODERATOR')}
+                                    onClick={() => handleMenuClick(m.id, 'MODERATOR')}
                                     className={'w-full flex items-center gap-x-1'}
                                   >
                                     <ShieldCheck className={'w-4 aspect-square'} />
@@ -134,11 +137,13 @@ function ManageMembers() {
                           </DropdownMenuSub>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem>
-                            <button className={'w-full flex items-center gap-x-1'}>
+                            <button
+                              onClick={() => handleMenuClick(m.id)}
+                              className={'w-full flex items-center gap-x-1'}
+                            >
                               <Gavel className={'w-4 aspect-square'} /> Удалить
                             </button>
                           </DropdownMenuItem>
-                          {/*<DropdownMenuItem className={'cursor-pointer'}></DropdownMenuItem>*/}
                         </DropdownMenuContent>
                       </DropdownMenuPortal>
                     </DropdownMenu>

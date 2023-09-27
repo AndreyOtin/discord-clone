@@ -1,8 +1,8 @@
-import prisma from '@/lib/prisma/prisma';
+import db from '@/lib/prisma/db';
 import { ServerWithLinks, ServerWithLinksAndUser } from '@/types/prisma';
 
 export const findUserServers = async (userId: string): Promise<ServerWithLinks[]> => {
-  return prisma.server.findMany({
+  return db.server.findMany({
     where: {
       member: {
         some: {
@@ -30,7 +30,7 @@ export const findUserServers = async (userId: string): Promise<ServerWithLinks[]
 };
 
 export const findAnyUserServer = async (userId: string) => {
-  return prisma.server.findFirst({
+  return db.server.findFirst({
     where: {
       member: {
         some: {
@@ -50,7 +50,7 @@ export const findAnyUserServer = async (userId: string) => {
 };
 
 export const findServer = async (serverId: string): Promise<ServerWithLinksAndUser | null> => {
-  return prisma.server.findUnique({
+  return db.server.findUnique({
     where: {
       id: serverId
     },

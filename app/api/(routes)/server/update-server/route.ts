@@ -1,4 +1,4 @@
-import prisma from '@/lib/prisma/prisma';
+import db from '@/lib/prisma/db';
 import { NextResponse } from 'next/server';
 import { checkAuth } from '@/lib/utils';
 
@@ -12,7 +12,7 @@ export const PATCH = async (req: Request) => {
       return NextResponse.json('Ползователь не зарегистрирова', { status: 401 });
     }
 
-    const server = await prisma.server.update({
+    const server = await db.server.update({
       where: {
         id: serverId,
         userId: user.userId

@@ -1,6 +1,6 @@
 import { checkAuth } from '@/lib/utils';
 import { redirect } from 'next/navigation';
-import prisma from '@/lib/prisma/prisma';
+import db from '@/lib/prisma/db';
 import { AppRoutes } from '@/consts/enums';
 
 async function Invite({ params }: { params: { id: string } }) {
@@ -10,7 +10,7 @@ async function Invite({ params }: { params: { id: string } }) {
     return redirect('/');
   }
 
-  const server = await prisma.server.findFirst({
+  const server = await db.server.findFirst({
     where: {
       inviteCode: params.id,
       member: {
@@ -25,7 +25,7 @@ async function Invite({ params }: { params: { id: string } }) {
     return redirect(`${AppRoutes.App}/${server.id}`);
   }
 
-  const result = await prisma.server.update({
+  const result = await db.server.update({
     where: {
       inviteCode: params.id
     },

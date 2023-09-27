@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {
   ChevronDown,
+  LogOut,
   LucideProps,
   PlusCircle,
   Settings,
@@ -71,9 +72,17 @@ const createMenu = (cb: {
     color: 'text-destructive'
   };
 
+  const leaveServer: Menu = {
+    onClick: (data) => cb.onClick('leaveServer', data),
+    text: 'Покинуть сервер',
+    Icon: LogOut,
+    separator: true,
+    color: 'text-destructive'
+  };
+
   return {
     ADMIN: [invite, createChannel, editMembers, editServer, deleteServer],
-    GUEST: [deleteServer],
+    GUEST: [leaveServer],
     MODERATOR: [invite, createChannel, editMembers, editServer, deleteServer]
   };
 };
@@ -101,9 +110,9 @@ function UserMenu({ server }: UserMenuProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent className={'w-[200px]'}>
           {createMenu({ onClick: openModal })[user?.role || 'GUEST'].map(
-            ({ onClick, Icon, text, separator, color }) => (
+            ({ onClick, Icon, text, separator, color }, _, arr) => (
               <Fragment key={text}>
-                {separator && <DropdownMenuSeparator />}
+                {separator && arr.length > 1 && <DropdownMenuSeparator />}
                 <DropdownMenuItem>
                   <button
                     onClick={() => onClick({ server })}

@@ -20,7 +20,7 @@ import { use404 } from '@/hooks/utils';
 function InvitePeople() {
   const { modal, closeModal, data, openModal } = useModalContext();
   const [copy, setCopy] = useState(false);
-  const inviteUrl = `${window.location.origin}/discord/invite/${data.server?.inviteCode}`;
+  const inviteUrl = `${window.location.origin}/invite/${data.server?.inviteCode}`;
   const id = crypto.randomUUID();
   const [isLoading, setIsLoading] = useState(false);
   const to404 = use404();

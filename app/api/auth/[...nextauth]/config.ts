@@ -1,6 +1,6 @@
 import { AuthOptions } from 'next-auth';
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import prisma from '@/lib/prisma/prisma';
+import db from '@/lib/prisma/db';
 import GitHubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { AppRoutes, RegisterFormVariant } from '@/consts/enums';
@@ -10,7 +10,7 @@ export const authConfig: AuthOptions = {
   session: {
     strategy: 'jwt'
   },
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(db),
   providers: [
     GitHubProvider({
       clientId: process.env.GITHUB_ID || '',
@@ -28,7 +28,7 @@ export const authConfig: AuthOptions = {
         const { email, password, variant, name } = credentials as NonNullable<typeof credentials>;
 
         if (variant === RegisterFormVariant.Signin) {
-          const user = await prisma.user.findFirst({
+          const user = await db.user.findFirst({
             where: {
               email
             }
@@ -50,7 +50,7 @@ export const authConfig: AuthOptions = {
         }
 
         try {
-          const newUser = await prisma.user.create({
+          const newUser = await db.user.create({
             data: {
               email,
               password: hashPassword(password),

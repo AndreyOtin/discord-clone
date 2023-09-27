@@ -4,12 +4,8 @@ const f = createUploadthing();
 
 export const ourFileRouter = {
   imageUploader: f({ image: { maxFileSize: '4MB', maxFileCount: 1 } })
-    .onUploadError((err) => {
-      console.log('ererrrrr', err);
-    })
-    .onUploadComplete(() => {
-      console.log('');
-    })
+    .onUploadError(() => undefined)
+    .onUploadComplete(() => undefined)
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

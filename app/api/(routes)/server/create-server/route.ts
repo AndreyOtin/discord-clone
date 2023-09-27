@@ -1,6 +1,6 @@
 import { CreateServerFormBody } from '@/components/forms/create-server/create-server-form';
 import { checkAuth } from '@/lib/utils';
-import prisma from '@/lib/prisma/prisma';
+import db from '@/lib/prisma/db';
 import { NextResponse } from 'next/server';
 
 export const POST = async (req: Request) => {
@@ -12,7 +12,7 @@ export const POST = async (req: Request) => {
       return NextResponse.json('Ползователь не зарегистрирова', { status: 401 });
     }
 
-    const server = await prisma.server.create({
+    const server = await db.server.create({
       data: {
         imageUrl: serverImage,
         name: serverName,
@@ -63,7 +63,7 @@ export const PATCH = async (req: Request) => {
       return NextResponse.json('Ползователь не зарегистрирова', { status: 401 });
     }
 
-    const server = await prisma.server.update({
+    const server = await db.server.update({
       where: { id: serverId },
       data: {
         imageUrl: serverImage,

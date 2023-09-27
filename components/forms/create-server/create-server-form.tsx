@@ -88,6 +88,7 @@ function CreateServerForm({ server }: CreateServerFormProps) {
                     onClientUploadComplete={(file) => {
                       field.onChange(file?.[0].url);
                     }}
+                    config={{ mode: 'auto' }}
                     content={{
                       label: 'Перетащите или выберите картинку для сервера',
                       allowedContent: 'картинкa не более 4 Mb',

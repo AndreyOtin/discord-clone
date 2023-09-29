@@ -1,7 +1,7 @@
 import db from '@/lib/prisma/db';
-import { ServerWithLinks, ServerWithLinksAndUser } from '@/types/prisma';
+import { ServerWithLinksAndUser } from '@/types/prisma';
 
-export const findUserServers = async (userId: string): Promise<ServerWithLinks[]> => {
+export const findUserServers = async (userId: string) => {
   return db.server.findMany({
     where: {
       member: {

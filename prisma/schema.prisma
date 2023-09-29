@@ -104,7 +104,7 @@ enum ChannelType {
   VIDEO
 }
 
-model Channel {
+model Page {
   id   String      @id @default(uuid())
   type ChannelType @default(TEXT)
   name String

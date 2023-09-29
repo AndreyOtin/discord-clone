@@ -59,7 +59,8 @@ const createMenu = (cb: {
   };
 
   const createChannel: Menu = {
-    onClick: (data) => cb.onClick('createChannel', data),
+    onClick: (data) =>
+      cb.onClick('createChannel', { server: data.server, channel: { method: 'POST' } }),
     text: 'Создать канал',
     Icon: PlusCircle
   };

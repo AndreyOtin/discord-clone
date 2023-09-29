@@ -17,7 +17,7 @@ async function Page() {
 
   return (
     <main>
-      <div className="flex  items-center justify-center">
+      <div className="flex items-center justify-center">
         <InitialServer />
       </div>
     </main>

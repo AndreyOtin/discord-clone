@@ -57,7 +57,6 @@ export const DELETE = async (req: Request) => {
       where: {
         id: serverId,
         userId: user.userId
-
       }
     });
 

@@ -20,8 +20,6 @@ function LeaveServer() {
     const url = new URL(window.location.origin + ApiRoutes.LeaveServer);
     url.searchParams.set('serverId', data.server?.id || '');
 
-    console.log(url);
-
     const response = await fetch(url, {
       method: modal === 'deleteServer' ? 'DELETE' : 'PATCH'
     });
@@ -36,6 +34,8 @@ function LeaveServer() {
         router.push(AppRoutes.App);
       });
     }
+
+    setIsLoading(false);
   };
 
   return (

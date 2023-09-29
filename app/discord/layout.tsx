@@ -8,7 +8,7 @@ async function Layout({ children }: { children: ReactNode }) {
   const servers = await findUserServers(session?.userId || '');
 
   return (
-    <div className="grid min-h-screen grid-cols-[80px_200px_1fr]">
+    <div className="grid min-h-screen grid-cols-[80px_240px_1fr]">
       <ActionsSidebar servers={servers} />
       {children}
     </div>

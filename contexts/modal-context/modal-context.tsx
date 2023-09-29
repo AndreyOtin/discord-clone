@@ -8,6 +8,7 @@ import ManageMembers from '@/components/modals/manage-members';
 import { ServerWithLinksAndUser } from '@/types/prisma';
 import CreateChannel from '@/components/modals/create-channel';
 import LeaveServer from '@/components/modals/leave-server';
+import { Channel, ChannelType } from '@prisma/client';
 
 const MODALS = [
   'creatServer',
@@ -21,6 +22,11 @@ const MODALS = [
 
 interface Data {
   server?: ServerWithLinksAndUser;
+  type?: ChannelType;
+  channel?: {
+    method: 'PATCH' | 'DELETE' | 'POST';
+    channel?: Channel;
+  };
 }
 
 interface ModalContext {

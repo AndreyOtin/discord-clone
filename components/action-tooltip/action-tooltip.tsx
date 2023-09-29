@@ -18,7 +18,7 @@ function ActionTooltip({ config, children, text }: ActionTooltipProps) {
     <TooltipProvider>
       <Tooltip delayDuration={100}>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
-        <TooltipContent {...config}>
+        <TooltipContent {...config} className={''}>
           <p>{text}</p>
         </TooltipContent>
       </Tooltip>

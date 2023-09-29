@@ -1,8 +1,7 @@
 export enum AppRoutes {
   Signin = '/auth/signin',
   Signup = '/auth/signup',
-  App = '/discord',
-  Server = '/server'
+  App = '/discord'
 }
 
 export enum RegisterFormVariant {

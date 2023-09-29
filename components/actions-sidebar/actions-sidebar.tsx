@@ -10,7 +10,7 @@ import { useThemeContext } from '@/contexts/theme-context/theme-context';
 import { TooltipContentProps } from '@/components/ui/tooltip';
 import { signOut } from 'next-auth/react';
 import Image from 'next/image';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { AppRoutes } from '@/consts/enums';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -37,13 +37,6 @@ function ActionsSidebar({ className, servers }: SideBarProps) {
   const bottom = useRef<HTMLDivElement>(null);
   const top = useRef<HTMLDivElement>(null);
   const [scrollAreaHeight, setScrollAreaHeight] = useState(0);
-  const router = useRouter();
-
-  // useEffect(() => {
-  //   startTransition(() => {
-  //     router.refresh();
-  //   });
-  // }, []);
 
   const calculateHeight = () => {
     if (!top.current || !bottom.current) {

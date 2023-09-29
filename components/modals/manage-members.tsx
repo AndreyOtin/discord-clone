@@ -8,15 +8,7 @@ import {
 } from '@/components/ui/dialog';
 import { useModalContext } from '@/contexts/modal-context/modal-context';
 import { Role } from '@prisma/client';
-import {
-  Check,
-  Gavel,
-  Loader2,
-  MoreVertical,
-  Shield,
-  ShieldAlert,
-  ShieldCheck
-} from 'lucide-react';
+import { Check, Gavel, Loader2, MoreVertical, Shield, ShieldCheck } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -32,17 +24,12 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { ApiRoutes } from '@/consts/enums';
+import { roleIconMap } from '@/components/icon-maps';
 
 function ManageMembers() {
   const [loadingId, setLoadingId] = useState('');
   const { modal, closeModal, data, openModal } = useModalContext();
   const members = data.server?.member || [];
-
-  const iconsMap = {
-    [Role.GUEST]: null,
-    [Role.MODERATOR]: <ShieldCheck className={'aspect-square w-4 text-tahiti'} />,
-    [Role.ADMIN]: <ShieldAlert className={'aspect-square w-4 text-red-500'} />
-  };
 
   const handleMenuClick = async (memberId: string, role?: Role) => {
     setLoadingId(memberId);
@@ -85,7 +72,7 @@ function ManageMembers() {
                   <div className={'flex flex-col flex-grow break-word'}>
                     <p className={'flex gap-x-1'}>
                       {m.user.name}
-                      {iconsMap[m.role]}
+                      {roleIconMap[m.role]}
                     </p>
                     <p className={'mt-auto'}>{m.user.email}</p>
                   </div>

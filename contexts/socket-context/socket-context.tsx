@@ -45,7 +45,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, []);
 
-  const value = useMemo(() => ({ socket, isConnected }), [socket, isConnected]);
+  const value = useMemo(() => ({ socket, isConnected }), [isConnected, socket]);
 
   return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>;
 };

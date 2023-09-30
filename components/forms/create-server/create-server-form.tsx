@@ -36,7 +36,7 @@ function CreateServerForm({ server }: CreateServerFormProps) {
       form.setValue('serverImage', server.imageUrl);
       form.setValue('serverName', server.name);
     }
-  }, []);
+  }, [form, server]);
 
   const onSubmit: SubmitHandler<CreateServerFormBody> = async (values) => {
     const postConfig: RequestInit = {

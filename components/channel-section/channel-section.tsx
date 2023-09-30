@@ -35,9 +35,12 @@ function ChannelSection({ title, channels, className, type, server }: ChannelPro
       </div>
       <ul>
         {channels.map((c) => (
-          <Link href={`${AppRoutes.App}/${server.id}/channel/${c.id}`} className={'group'}>
+          <Link
+            key={c.id}
+            href={`${AppRoutes.App}/${server.id}/channel/${c.id}`}
+            className={'group'}
+          >
             <li
-              key={c.id}
               className={'flex gap-x-2 px-3 py-1 items-center group-hover:bg-foreground/10 rounded'}
             >
               <span className={''}>{channelIconMap[c.type]}</span>

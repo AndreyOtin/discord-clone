@@ -47,6 +47,7 @@ model User {
   server        Server[]
   member        Member[]
   channel       Channel[]
+  Messges       Message[]
 }
 
 model VerificationToken {
@@ -104,7 +105,7 @@ enum ChannelType {
   VIDEO
 }
 
-model Page {
+model Channel {
   id   String      @id @default(uuid())
   type ChannelType @default(TEXT)
   name String
@@ -115,9 +116,29 @@ model Page {
   serverId String
   server   Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
 
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  messages   Message[]
+
+  @@index([userId])
+  @@index([serverId])
+}
+
+model Message {
+  id      String @id @default(uuid())
+  content String @db.Text
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  channelId String
+  channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
+  deleted Boolean @default(false)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([userId])
-  @@index([serverId])
+  @@index([channelId])
 }

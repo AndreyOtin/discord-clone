@@ -1,5 +1,6 @@
 import 'next-auth';
 import 'next-auth/jwt';
+import 'socket.io';
 
 declare module 'next-auth' {
   interface Session {
@@ -9,16 +10,17 @@ declare module 'next-auth' {
       image?: string | null;
       userId: string;
     };
-    expires: string;
   }
 }
 
 declare module 'next-auth/jwt' {
   interface JWT {
-    name?: string | null;
-    email?: string | null;
-    picture?: string | null;
-    sub?: string;
     userId: string;
+  }
+}
+
+declare module 'socket.io' {
+  interface ServerOptions {
+    addTrailingSlash: boolean;
   }
 }

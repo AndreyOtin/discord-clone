@@ -6,7 +6,11 @@ export const getMessages = async (channelId: string) => {
       channelId
     },
     include: {
-      user: true
+      member: {
+        include: {
+          user: true
+        }
+      }
     },
     orderBy: {
       createdAt: 'asc'

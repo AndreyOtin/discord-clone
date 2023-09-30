@@ -3,10 +3,12 @@ import { NextApiResponseServerIo } from '@/types/app';
 import db from '@/lib/prisma/db';
 import { getServerSession } from 'next-auth';
 import { authConfig } from '@/app/api/auth/[...nextauth]/config';
+import { IoEvent } from '@/consts/enums';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponseServerIo) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    res.socket.server.io.emit(IoEvent.ChatError);
+    res.end();
   }
 
   try {
@@ -20,15 +22,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
     }
 
     if (!serverId) {
-      return res.status(400).json({ error: 'Server ID missing' });
+      res.socket.server.io.emit(IoEvent.ChatError, { error: 'Server ID missing' });
+      res.end();
+      return;
     }
 
     if (!channelId) {
-      return res.status(400).json({ error: 'Channel ID missing' });
+      res.socket.server.io.emit(IoEvent.ChatError, { error: 'ChannelMessages ID missing' });
+      res.end();
+      return;
     }
 
     if (!content) {
-      return res.status(400).json({ error: 'Content missing' });
+      res.socket.server.io.emit(IoEvent.ChatError, { error: 'Content missing' });
+      res.end();
+      return;
     }
 
     const server = await db.server.findFirst({
@@ -46,24 +54,39 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
     });
 
     if (!server) {
-      return res.status(404).json({ message: 'Server not found' });
+      res.socket.server.io.emit(IoEvent.ChatError, { message: 'Server not found' });
+      res.end();
+      return;
+    }
+
+    const member = server.member.find((m) => m.userId === user.userId);
+
+    if (!member) {
+      res.socket.server.io.emit(IoEvent.ChatError, { message: 'Member not found' });
+      res.end();
+      return;
     }
 
     const message = await db.message.create({
       data: {
         content,
         channelId: channelId as string,
-        userId: user.userId
+        memberId: member.id
       },
       include: {
-        user: true
+        member: {
+          include: {
+            user: true
+          }
+        }
       }
     });
 
-    const channelKey = `chat:${channelId}:messages`;
-    res.socket.server.io.emit(channelKey, message);
-    return res.status(200).json(message);
+    const event = IoEvent.ChatMessages + channelId;
+    res.socket.server.io.emit(event, message);
+    res.end();
   } catch (error) {
-    return res.status(500).json({ message: 'Internal Error' });
+    res.socket.server.io.emit(IoEvent.ChatError);
+    res.end();
   }
 }

@@ -6,7 +6,7 @@ import { UploadDropzone } from '@/lib/uploadthing';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { X } from 'lucide-react';
-import { ApiRoutes, AppRoutes } from '@/consts/enums';
+import { ApiRoute, AppRoutes } from '@/consts/enums';
 import { useRouter } from 'next/navigation';
 import { useModalContext } from '@/contexts/modal-context/modal-context';
 import { use404 } from '@/hooks/utils';
@@ -52,7 +52,7 @@ function CreateServerForm({ server }: CreateServerFormProps) {
       })
     };
 
-    const res = await fetch(ApiRoutes.CreateServer, server ? patchConfig : postConfig);
+    const res = await fetch(ApiRoute.CreateServer, server ? patchConfig : postConfig);
 
     if (res.ok) {
       const data = await res.json();

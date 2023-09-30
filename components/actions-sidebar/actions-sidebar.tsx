@@ -69,7 +69,7 @@ function ActionsSidebar({ className, servers }: SideBarProps) {
   }, []);
 
   return (
-    <div className={cn(className, 'relative px-2 py-4')}>
+    <div className={cn(className, 'relative px-2 py-4 w-[80px]  flex-shrink-0')}>
       <h2 className={'sr-only'}>Меню действий</h2>
       <nav className={'flex h-full flex-col'}>
         <div ref={top} className={'mb-2'}>
@@ -86,7 +86,7 @@ function ActionsSidebar({ className, servers }: SideBarProps) {
               <li key={id} className={'relative'}>
                 {params?.id === id && (
                   <Separator
-                    className={'absolute left-0 top-0 w-[1px] rounded bg-primary'}
+                    className={'absolute left-1 top-0 w-[1px] rounded bg-primary'}
                     orientation={'vertical'}
                   />
                 )}

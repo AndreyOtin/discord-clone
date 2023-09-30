@@ -3,7 +3,7 @@
 import React, { startTransition, useState } from 'react';
 import { useModalContext } from '@/contexts/modal-context/modal-context';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { ApiRoutes, AppRoutes } from '@/consts/enums';
+import { ApiRoute, AppRoutes } from '@/consts/enums';
 import { use404 } from '@/hooks/utils';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
@@ -17,7 +17,7 @@ function LeaveServer() {
 
   const handleLeaveClick = async () => {
     setIsLoading(true);
-    const url = new URL(window.location.origin + ApiRoutes.LeaveServer);
+    const url = new URL(window.location.origin + ApiRoute.LeaveServer);
     url.searchParams.set('serverId', data.server?.id || '');
 
     const response = await fetch(url, {

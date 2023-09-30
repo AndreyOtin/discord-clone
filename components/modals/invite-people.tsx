@@ -13,7 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Check, Copy, RefreshCw } from 'lucide-react';
-import { ApiRoutes } from '@/consts/enums';
+import { ApiRoute } from '@/consts/enums';
 import { cn } from '@/lib/utils';
 import { use404 } from '@/hooks/utils';
 
@@ -40,7 +40,7 @@ function InvitePeople() {
     setCopy(false);
     await navigator.clipboard.writeText('');
 
-    const response = await fetch(ApiRoutes.UpdateInviteCode, {
+    const response = await fetch(ApiRoute.UpdateInviteCode, {
       method: 'PATCH',
       body: JSON.stringify({ serverId: data.server?.id })
     });

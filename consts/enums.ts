@@ -9,10 +9,15 @@ export enum RegisterFormVariant {
   Signup = 'signup'
 }
 
-export enum ApiRoutes {
+export enum ApiRoute {
   CreateServer = '/api/server/create-server',
   UpdateInviteCode = '/api/server/update-server',
   LeaveServer = '/api/server/leave-server',
   Members = '/api/members',
   Channel = '/api/channel'
+}
+
+export enum IoEvent {
+  ChatError = 'chat-error',
+  ChatMessages = 'chat-messages'
 }

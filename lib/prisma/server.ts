@@ -45,6 +45,9 @@ export const findAnyUserServer = async (userId: string) => {
         }
       },
       channel: true
+    },
+    orderBy: {
+      name: 'asc'
     }
   });
 };

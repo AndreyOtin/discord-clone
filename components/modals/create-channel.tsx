@@ -24,7 +24,7 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { ApiRoutes } from '@/consts/enums';
+import { ApiRoute } from '@/consts/enums';
 import { createChannelSchema } from '@/consts/schemas';
 import { Loader2 } from 'lucide-react';
 import { use404 } from '@/hooks/utils';
@@ -63,7 +63,7 @@ function CreateChannel() {
 
   const onSubmit: SubmitHandler<Form> = async (values) => {
     console.log('123');
-    const url = new URL(window.location.origin + ApiRoutes.Channel);
+    const url = new URL(window.location.origin + ApiRoute.Channel);
     url.searchParams.set('serverId', data.server?.id || '');
     url.searchParams.set('channelId', data.channel?.channel?.id || '');
 
@@ -84,7 +84,7 @@ function CreateChannel() {
 
   const handleDelete = async () => {
     setIsLoading(true);
-    const url = new URL(window.location.origin + ApiRoutes.Channel);
+    const url = new URL(window.location.origin + ApiRoute.Channel);
     url.searchParams.set('serverId', data.server?.id || '');
     url.searchParams.set('channelId', data.channel?.channel?.id || '');
     console.log(url);

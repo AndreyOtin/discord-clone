@@ -11,5 +11,7 @@ export type ServerWithLinksAndUser = Server & {
 };
 
 export type MessageWithUser = Message & {
-  user: User;
+  member: Member & {
+    user: User;
+  };
 };

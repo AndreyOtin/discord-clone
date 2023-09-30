@@ -23,7 +23,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { ApiRoutes } from '@/consts/enums';
+import { ApiRoute } from '@/consts/enums';
 import { roleIconMap } from '@/components/icon-maps';
 
 function ManageMembers() {
@@ -33,7 +33,7 @@ function ManageMembers() {
 
   const handleMenuClick = async (memberId: string, role?: Role) => {
     setLoadingId(memberId);
-    const response = await fetch(ApiRoutes.Members, {
+    const response = await fetch(ApiRoute.Members, {
       method: role ? 'PATCH' : 'DELETE',
       body: JSON.stringify({
         serverId: data.server?.id,

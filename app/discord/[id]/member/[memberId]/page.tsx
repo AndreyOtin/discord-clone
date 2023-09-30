@@ -13,7 +13,7 @@ async function Member({ params }: { params: { id: string; memberId: string } }) 
   return (
     <>
       <ServerMenuSidebar server={server} />
-      <main className={'text-red-700 p-4'}>{params.memberId}</main>
+      <main className={'p-4 flex flex-col h-full w-full'}></main>
     </>
   );
 }

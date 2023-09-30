@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import ServerMenuSidebar from '@/components/server-menu-sidebar/server-menu-sidebar-props';
 import { checkAuth } from '@/lib/utils';
 import { getMessages } from '@/lib/prisma/messages';
-import Channel from '@/components/channel/channel';
+import ChannelMessages from '@/components/channel/channel-messages';
 import MainHeader from '@/components/main-header/main-header';
 import { getChannel } from '@/lib/prisma/channel';
 import MessageForm from '@/components/forms/message/message-form';
@@ -22,15 +22,15 @@ async function ChannelPage({ params }: { params: { id: string; channelId: string
   return (
     <>
       <ServerMenuSidebar server={server} />
-      <main className={'p-4 flex flex-col h-full'}>
+      <main className={'p-4 flex flex-col h-full w-full'}>
         <MainHeader channel={channel} />
-        <Channel
+        <ChannelMessages
           className={''}
           serverId={params.id}
           messages={messages}
-          channelId={params.channelId}
+          channel={channel}
         />
-        <MessageForm channelId={params.channelId} serverId={params.id} className={'mb-12'} />
+        <MessageForm channel={channel} serverId={params.id} className={'mb-12'} />
       </main>
     </>
   );

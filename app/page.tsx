@@ -8,7 +8,7 @@ export default async function Home() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <main className="flex items-center">
+      <main className="flex items-center flex-1">
         <div className="container flex justify-center">
           <div className="space-y-4 p-2">
             <h1 className="text-4xl">Добро пожаловать на дискор-клон сайт</h1>

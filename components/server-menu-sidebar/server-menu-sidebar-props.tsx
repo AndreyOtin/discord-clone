@@ -24,9 +24,9 @@ async function ServerMenuSidebar({ server }: ServerMenuSidebarProps) {
   });
 
   return (
-    <div className={'px-2 py-4'}>
+    <div className={'px-2 py-4 w-[240px]  flex-shrink-0'}>
       <UserMenu server={server} />
-      <Separator className={'mt-2'} />
+      <Separator className={'mt-2 bg-neutral-400 dark:bg-muted'} />
       <ChannelSection
         server={server}
         type={'TEXT'}
@@ -50,7 +50,7 @@ async function ServerMenuSidebar({ server }: ServerMenuSidebarProps) {
       />
       <div className={'mt-4'}>
         <h2 className={'mb-2'}>Участники</h2>
-        <ul className={'space-y-2'}>
+        <ul className={'space-y-4'}>
           {server.member.map((m) => (
             <Link
               key={m.id}
@@ -59,7 +59,7 @@ async function ServerMenuSidebar({ server }: ServerMenuSidebarProps) {
             >
               <li
                 className={
-                  'flex items-center gap-x-2 group-hover:bg-foreground/10 rounded rounded-l-2xl'
+                  'flex items-center gap-x-2 group-hover:bg-foreground/10 rounded rounded-l-2xl mb-2'
                 }
               >
                 <Avatar>

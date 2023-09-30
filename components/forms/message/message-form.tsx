@@ -15,10 +15,15 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { Smile } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import EmojiPicker from '@emoji-mart/react';
+import data from '@emoji-mart/data';
+import { useThemeContext } from '@/contexts/theme-context/theme-context';
+import { Channel } from '@prisma/client';
 
 type MessageFormProps = {
   className: string;
-  channelId: string;
+  channel: Channel;
   serverId: string;
 };
 
@@ -28,7 +33,8 @@ export const messageSchema = z.object({
 
 export type MessageForm = z.infer<typeof messageSchema>;
 
-const MessageForm = ({ className, channelId, serverId }: MessageFormProps) => {
+const MessageForm = ({ className, channel, serverId }: MessageFormProps) => {
+  const { theme } = useThemeContext();
   const form = useForm<MessageForm>({
     resolver: zodResolver(messageSchema),
     defaultValues: {
@@ -38,13 +44,15 @@ const MessageForm = ({ className, channelId, serverId }: MessageFormProps) => {
 
   const onSubmit: SubmitHandler<MessageForm> = async (values) => {
     const url = new URL(window.location.origin + '/api/messages');
-    url.searchParams.set('channelId', channelId);
+    url.searchParams.set('channelId', channel.id);
     url.searchParams.set('serverId', serverId);
 
     await fetch(url, {
       method: 'POST',
       body: JSON.stringify(values)
     });
+
+    form.reset();
   };
 
   return (
@@ -61,6 +69,7 @@ const MessageForm = ({ className, channelId, serverId }: MessageFormProps) => {
                 <FormControl>
                   <Input
                     {...field}
+                    placeholder={`Сообщение #${channel.name}`}
                     disabled={formState.isSubmitting}
                     className={' pr-16'}
                     onBlur={callAll(() => {
@@ -68,16 +77,29 @@ const MessageForm = ({ className, channelId, serverId }: MessageFormProps) => {
                     }, field.onBlur)}
                   />
                 </FormControl>
-                <Button
-                  disabled={formState.isSubmitting}
-                  variant={'ghost'}
-                  size={'icon'}
-                  className={
-                    'absolute top-1/2 right-4 -translate-y-1/2 aspect-square h-full w-auto '
-                  }
-                >
-                  <Smile />
-                </Button>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      disabled={formState.isSubmitting}
+                      variant={'ghost'}
+                      size={'icon'}
+                      className={
+                        'absolute top-1/2 right-4 -translate-y-1/2 aspect-square h-full w-auto '
+                      }
+                    >
+                      <Smile />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent>
+                    <EmojiPicker
+                      theme={theme}
+                      data={data}
+                      onEmojiSelect={(v: { native: string }) =>
+                        field.onChange(`${field.value}${v.native}`)
+                      }
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
             </FormItem>
           )}

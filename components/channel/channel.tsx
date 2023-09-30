@@ -1,74 +1,49 @@
 'use client';
 
-import { Message } from '@prisma/client';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useSocket } from '@/contexts/socket-context/socket-context';
+import ChannelMessage from '@/components/channel-message/channel-message';
+import { MessageWithUser } from '@/types/prisma';
+import { cn } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
 
 type ChannelProps = {
-  cursor: string;
-  messages: Message[];
+  messages: MessageWithUser[];
   channelId: string;
   serverId: string;
+  className: string;
 };
 
-function Channel({ cursor, messages, channelId, serverId }: ChannelProps) {
-  const store = useRef({
-    allMessages: [] as Message[],
-    currentSlice: [] as Message[]
-  }).current;
+function Channel({ messages, className, channelId, serverId }: ChannelProps) {
   const router = useRouter();
-  const isMounted = useRef(false);
-  const { socket } = useSocket();
+  const { socket, isConnected } = useSocket();
   const channelKey = `chat:${channelId}:messages`;
-
-  if (cursor) {
-    store.currentSlice = messages;
-  }
+  const [channelMessages, setChannelMessages] = useState(messages);
 
   useEffect(() => {
     if (!socket) {
       return;
     }
 
-    socket.on(channelKey, () => {
-      router.refresh();
+    socket.on(channelKey, (message: MessageWithUser) => {
+      setChannelMessages((s) => [...s, message]);
     });
-  }, [socket]);
 
-  const onSubmit = () => {
-    const url = new URL(window.location.origin + '/api/messages');
-    url.searchParams.set('channelId', channelId);
-    url.searchParams.set('serverId', serverId);
+    return () => {
+      socket.off(channelKey);
+    };
+  }, [channelKey, router, socket]);
 
-    void fetch(url, {
-      method: 'POST',
-      body: JSON.stringify({ content: 'hello' })
-    });
-  };
-
-  useEffect(() => {
-    if (!isMounted.current && cursor) {
-      isMounted.current = true;
-      router.replace(window.location.pathname);
-      return;
-    }
-
-    if (cursor) {
-      store.allMessages = store.allMessages.concat(store.currentSlice);
-      store.currentSlice = [];
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.set('cursor', cursor);
-
-      router.push(newUrl.href);
-    }
-  }, [cursor]);
-  console.log(new Set(store.allMessages.concat(messages).map((e) => e.id)));
   return (
-    <div>
-      {store.allMessages.concat(messages).map((m) => (
-        <div key={m.id}>{m.content}</div>
-      ))}
+    <div className={cn(className, 'flex flex-col flex-1 ')}>
+      {!isConnected && <Loader2 className={'animate-spin'} />}
+      <div className="flex-1" />
+      <ul className={'p-2 flex flex-col mt-auto overflow-y-auto'}>
+        {channelMessages.map((m) => (
+          <ChannelMessage key={m.id} message={m} />
+        ))}
+      </ul>
     </div>
   );
 }

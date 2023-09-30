@@ -52,7 +52,11 @@ async function ServerMenuSidebar({ server }: ServerMenuSidebarProps) {
         <h2 className={'mb-2'}>Участники</h2>
         <ul className={'space-y-2'}>
           {server.member.map((m) => (
-            <Link href={`${AppRoutes.App}/${server.id}/member/${m.id}`} className={'group'}>
+            <Link
+              key={m.id}
+              href={`${AppRoutes.App}/${server.id}/member/${m.id}`}
+              className={'group'}
+            >
               <li
                 className={
                   'flex items-center gap-x-2 group-hover:bg-foreground/10 rounded rounded-l-2xl'

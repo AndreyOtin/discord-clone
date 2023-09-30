@@ -41,3 +41,10 @@ export const throttle = (cb: (...args: []) => void, delay: number) => {
 
 export const isIncluded = <T extends readonly string[]>(str: string, values: T): str is T[number] =>
   values.includes(str);
+
+export const callAll =
+  <E extends unknown[], T extends unknown[] = { [K in keyof E]?: E[K] }>(
+    ...fns: (((...args: T) => void) | (() => void) | undefined)[]
+  ) =>
+  (...args: T) =>
+    fns.forEach((fn) => fn?.(...args));

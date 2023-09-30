@@ -5,32 +5,32 @@ import ServerMenuSidebar from '@/components/server-menu-sidebar/server-menu-side
 import { checkAuth } from '@/lib/utils';
 import { getMessages } from '@/lib/prisma/messages';
 import Channel from '@/components/channel/channel';
+import MainHeader from '@/components/main-header/main-header';
+import { getChannel } from '@/lib/prisma/channel';
+import MessageForm from '@/components/forms/message/message-form';
 
-async function ChannelPage({
-  params,
-  searchParams
-}: {
-  params: { id: string; channelId: string };
-  searchParams: { cursor: string };
-}) {
+async function ChannelPage({ params }: { params: { id: string; channelId: string } }) {
   await checkAuth();
   const server = await findServer(params.id);
-  const { newCursor, messages } = await getMessages(params.channelId, searchParams.cursor);
+  const channel = await getChannel(params.channelId);
+  const messages = await getMessages(params.channelId);
 
-  if (!server) {
+  if (!server || !channel) {
     return notFound();
   }
 
   return (
     <>
       <ServerMenuSidebar server={server} />
-      <main className={'text-red-700 p-4'}>
+      <main className={'p-4 flex flex-col h-full'}>
+        <MainHeader channel={channel} />
         <Channel
+          className={''}
           serverId={params.id}
-          cursor={newCursor}
           messages={messages}
           channelId={params.channelId}
         />
+        <MessageForm channelId={params.channelId} serverId={params.id} className={'mb-12'} />
       </main>
     </>
   );

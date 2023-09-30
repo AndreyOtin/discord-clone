@@ -84,7 +84,7 @@ function ActionsSidebar({ className, servers }: SideBarProps) {
           <ul className={'mb-2 space-y-2'}>
             {servers.map(({ imageUrl, id, name }) => (
               <li key={id} className={'relative'}>
-                {params.id === id && (
+                {params?.id === id && (
                   <Separator
                     className={'absolute left-0 top-0 w-[1px] rounded bg-primary'}
                     orientation={'vertical'}

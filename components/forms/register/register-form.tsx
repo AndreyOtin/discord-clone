@@ -73,12 +73,12 @@ function RegisterForm(props: RegisterFormProps) {
   };
 
   useEffect(() => {
-    const err = searchParams.get('error');
+    const err = searchParams?.get('error');
 
     if (err) {
       setError(true);
     }
-  }, []);
+  }, [searchParams]);
 
   return (
     <Form {...form}>
@@ -86,7 +86,7 @@ function RegisterForm(props: RegisterFormProps) {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex w-[300px] flex-col border border-primary bg-background p-8"
       >
-        {error && !searchParams.get('error') ? (
+        {error && !searchParams?.get('error') ? (
           <div className="mb-4 text-center text-destructive">
             {props.variant === 'signin' ? (
               <span>Введен неверный пароль или емайл</span>

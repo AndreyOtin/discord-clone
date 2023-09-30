@@ -7,7 +7,7 @@ function InitialServer() {
   const { openModal } = useModalContext();
   useEffect(() => {
     openModal('creatServer');
-  }, []);
+  }, [openModal]);
 
   return null;
 }

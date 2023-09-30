@@ -36,12 +36,12 @@ const MessageForm = ({ className, channelId, serverId }: MessageFormProps) => {
     }
   });
 
-  const onSubmit: SubmitHandler<MessageForm> = (values) => {
+  const onSubmit: SubmitHandler<MessageForm> = async (values) => {
     const url = new URL(window.location.origin + '/api/messages');
     url.searchParams.set('channelId', channelId);
     url.searchParams.set('serverId', serverId);
 
-    void fetch(url, {
+    await fetch(url, {
       method: 'POST',
       body: JSON.stringify(values)
     });
@@ -53,7 +53,7 @@ const MessageForm = ({ className, channelId, serverId }: MessageFormProps) => {
         <FormField
           control={form.control}
           name={'content'}
-          render={({ field }) => (
+          render={({ field, formState }) => (
             <FormItem className={''}>
               <FormLabel className={'sr-only'}>Введите сообщение</FormLabel>
               <div className={'w-[80%] mx-auto relative'}>
@@ -61,6 +61,7 @@ const MessageForm = ({ className, channelId, serverId }: MessageFormProps) => {
                 <FormControl>
                   <Input
                     {...field}
+                    disabled={formState.isSubmitting}
                     className={' pr-16'}
                     onBlur={callAll(() => {
                       form.clearErrors();
@@ -68,6 +69,7 @@ const MessageForm = ({ className, channelId, serverId }: MessageFormProps) => {
                   />
                 </FormControl>
                 <Button
+                  disabled={formState.isSubmitting}
                   variant={'ghost'}
                   size={'icon'}
                   className={

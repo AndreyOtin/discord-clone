@@ -85,7 +85,7 @@ module.exports = {
         'spin-slow': {
           '0%': { transform: 'scale(1) rotate(0)' },
           '50%': { transform: 'scale(1.5) rotate(180deg)' },
-          '100%': { transform: 'scale(1) rotate(360deg)' },
+          '100%': { transform: 'scale(1) rotate(360deg)' }
         }
       },
       animation: {

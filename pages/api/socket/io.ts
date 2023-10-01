@@ -20,6 +20,8 @@ const ioHandler = (req: NextApiRequest, res: NextApiResponseServerIo) => {
     });
   }
 
+  console.log('soketio');
+
   res.end();
 };
 

@@ -25,9 +25,17 @@ function ChannelMessages({ messages, className, channel }: ChannelProps) {
   const [channelMessages, setChannelMessages] = useState(messages);
   const [error, setError] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const isMounted = useRef(false);
 
   useLayoutEffect(() => {
-    ref.current?.scroll({ top: ref.current.scrollHeight, behavior: 'smooth' });
+    let config: 'smooth' | 'instant' = 'smooth';
+
+    if (!isMounted.current) {
+      isMounted.current = true;
+      config = 'instant';
+    }
+
+    ref.current?.scroll({ top: ref.current.scrollHeight, behavior: config });
   });
 
   useEffect(() => {

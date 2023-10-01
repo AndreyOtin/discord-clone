@@ -10,7 +10,7 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className={'grid justify-items-center gap-2 p-4'}>
-        <h2>Something went wrong!</h2>
+        <h2>Что пошло не так!</h2>
         {process.env.NODE_ENV === 'development' && <p>{error.message}</p>}
         <button
           className={`active:ring-none rounded border-none bg-primary p-1 text-primary-foreground  
@@ -18,7 +18,7 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
           `}
           onClick={() => reset()}
         >
-          Try again
+          Попробывать снова
         </button>
       </div>
     </div>

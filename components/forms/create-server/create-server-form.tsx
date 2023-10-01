@@ -1,6 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { UploadDropzone } from '@/lib/uploadthing';
 import { Button } from '@/components/ui/button';
@@ -30,6 +37,7 @@ function CreateServerForm({ server }: CreateServerFormProps) {
   const router = useRouter();
   const { closeModal } = useModalContext();
   const to404 = use404();
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (server) {
@@ -70,8 +78,9 @@ function CreateServerForm({ server }: CreateServerFormProps) {
         <FormField
           control={form.control}
           name={'serverImage'}
-          render={({ field }) => (
+          render={({ field, formState }) => (
             <FormItem className={'mb-4'}>
+              <FormMessage />
               <FormControl>
                 {field.value ? (
                   <div className="relative mx-auto h-20 w-20">
@@ -87,6 +96,9 @@ function CreateServerForm({ server }: CreateServerFormProps) {
                   <UploadDropzone
                     onClientUploadComplete={(file) => {
                       field.onChange(file?.[0].url);
+                    }}
+                    onUploadError={({ message }) => {
+                      form.setError('serverImage', { message });
                     }}
                     config={{ mode: 'auto' }}
                     content={{

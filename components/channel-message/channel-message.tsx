@@ -24,7 +24,7 @@ function ChannelMessage({ message }: ChannelMessageProps) {
           <time>{dayjs(message.createdAt).format('DD.MM.YYYY, HH:mm:ss')}</time>
         </div>
       </div>
-      <p className="p-4 pl-12 pr-12 bg-muted bg-neutral-900 rounded-l">{message.content}</p>
+      <p className="p-4 pl-12 pr-12 bg-muted dark:bg-neutral-900 rounded-l">{message.content}</p>
     </li>
   );
 }

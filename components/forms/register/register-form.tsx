@@ -59,7 +59,6 @@ function RegisterForm(props: RegisterFormProps) {
   const handleGithubClick = async () => {
     setIsLoading(true);
     const res = await signIn('github', {
-      callbackUrl: AppRoutes.App,
       redirect: false
     });
 

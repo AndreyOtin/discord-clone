@@ -4,16 +4,16 @@ import React, { startTransition, useState } from 'react';
 import { useModalContext } from '@/contexts/modal-context/modal-context';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ApiRoute, AppRoutes } from '@/consts/enums';
-import { use404 } from '@/hooks/utils';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/components/ui/use-toast';
 
 function LeaveServer() {
   const { modal, closeModal, data } = useModalContext();
-  const to404 = use404();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { toast } = useToast();
 
   const handleLeaveClick = async () => {
     setIsLoading(true);
@@ -25,17 +25,20 @@ function LeaveServer() {
     });
 
     if (!response.ok) {
-      to404();
-    } else {
-      startTransition(() => {
-        closeModal();
-        setIsLoading(false);
-        router.refresh();
-        router.push(AppRoutes.App);
+      toast({
+        title: 'Что то пошло не так',
+        variant: 'destructive'
       });
-    }
 
-    setIsLoading(false);
+      setIsLoading(false);
+    } else {
+      closeModal();
+    }
+    startTransition(() => {
+      router.refresh();
+      router.push(AppRoutes.App);
+      setIsLoading(false);
+    });
   };
 
   return (
@@ -45,8 +48,10 @@ function LeaveServer() {
           <DialogTitle>{modal === 'deleteServer' ? 'Удалить' : 'Покинуть сервер'}</DialogTitle>
         </DialogHeader>
         <div className={'flex justify-around'}>
-          <Button onClick={closeModal}>Отмена</Button>
-          <Button onClick={handleLeaveClick}>
+          <Button disabled={isLoading} onClick={closeModal}>
+            Отмена
+          </Button>
+          <Button disabled={isLoading} onClick={handleLeaveClick}>
             {isLoading && <Loader2 className={'animate-spin'} />}
             Подтвердить
           </Button>

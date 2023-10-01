@@ -44,7 +44,6 @@ function ManageMembers() {
 
     if (response.ok) {
       const res = await response.json();
-
       startTransition(() => {
         openModal('editMembers', { server: res });
       });

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { startTransition, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import {
   Form,
@@ -12,12 +12,12 @@ import { Input } from '@/components/ui/input';
 import { UploadDropzone } from '@/lib/uploadthing';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
-import { X } from 'lucide-react';
+import { Loader2, X } from 'lucide-react';
 import { ApiRoute, AppRoutes } from '@/consts/enums';
 import { useRouter } from 'next/navigation';
 import { useModalContext } from '@/contexts/modal-context/modal-context';
-import { use404 } from '@/hooks/utils';
 import { Server } from '@prisma/client';
+import { useToast } from '@/components/ui/use-toast';
 
 const defaultValues = {
   serverName: '',
@@ -36,8 +36,8 @@ function CreateServerForm({ server }: CreateServerFormProps) {
   });
   const router = useRouter();
   const { closeModal } = useModalContext();
-  const to404 = use404();
-  const [error, setError] = useState('');
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (server) {
@@ -47,6 +47,8 @@ function CreateServerForm({ server }: CreateServerFormProps) {
   }, [form, server]);
 
   const onSubmit: SubmitHandler<CreateServerFormBody> = async (values) => {
+    setIsLoading(true);
+
     const postConfig: RequestInit = {
       method: 'POST',
       body: JSON.stringify(values)
@@ -64,11 +66,18 @@ function CreateServerForm({ server }: CreateServerFormProps) {
 
     if (res.ok) {
       const data = await res.json();
-      router.push(AppRoutes.App + `/${data.id}`);
-      router.refresh();
       closeModal();
+      startTransition(() => {
+        router.push(AppRoutes.App + `/${data.id}`);
+        router.refresh();
+        setIsLoading(false);
+      });
     } else {
-      to404();
+      toast({
+        title: 'Что то пошло не так',
+        variant: 'destructive'
+      });
+      setIsLoading(false);
     }
   };
 
@@ -78,7 +87,7 @@ function CreateServerForm({ server }: CreateServerFormProps) {
         <FormField
           control={form.control}
           name={'serverImage'}
-          render={({ field, formState }) => (
+          render={({ field }) => (
             <FormItem className={'mb-4'}>
               <FormMessage />
               <FormControl>
@@ -107,7 +116,7 @@ function CreateServerForm({ server }: CreateServerFormProps) {
                       button: 'Загрузить картинку'
                     }}
                     appearance={{
-                      button: 'w-1/2'
+                      button: 'hidden'
                     }}
                     endpoint={'imageUploader'}
                   />
@@ -128,7 +137,8 @@ function CreateServerForm({ server }: CreateServerFormProps) {
             </FormItem>
           )}
         />
-        <Button className={'mx-auto my-4 block'} disabled={form.formState.isSubmitting}>
+        <Button className={'mx-auto my-4 block flex gap-x-2'} disabled={isLoading}>
+          {isLoading && <Loader2 className={'animate-spin'} />}
           {server ? 'Обновить' : 'Создать'}
         </Button>
       </form>

@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Check, Copy, RefreshCw } from 'lucide-react';
 import { ApiRoute } from '@/consts/enums';
 import { cn } from '@/lib/utils';
-import { use404 } from '@/hooks/utils';
+import { useToast } from '@/components/ui/use-toast';
 
 function InvitePeople() {
   const { modal, closeModal, data, openModal } = useModalContext();
@@ -23,7 +23,7 @@ function InvitePeople() {
   const inviteUrl = `${window.location.origin}/invite/${data.server?.inviteCode}`;
   const id = crypto.randomUUID();
   const [isLoading, setIsLoading] = useState(false);
-  const to404 = use404();
+  const { toast } = useToast();
 
   const handleCopyClick = () => {
     setCopy(true);
@@ -49,7 +49,10 @@ function InvitePeople() {
       const responseData = await response.json();
       openModal('invite', { server: responseData.server });
     } else {
-      to404();
+      toast({
+        title: 'Что то пошло не так',
+        variant: 'destructive'
+      });
     }
 
     setIsLoading(false);

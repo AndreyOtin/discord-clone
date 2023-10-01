@@ -24,12 +24,12 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { ApiRoute } from '@/consts/enums';
+import { ApiRoute, AppRoutes } from '@/consts/enums';
 import { createChannelSchema } from '@/consts/schemas';
 import { Loader2 } from 'lucide-react';
-import { use404 } from '@/hooks/utils';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/components/ui/use-toast';
 
 type Form = z.infer<typeof createChannelSchema>;
 
@@ -48,9 +48,9 @@ function CreateChannel() {
     }
   });
   const { modal, closeModal, data } = useModalContext();
-  const to404 = use404();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (data.type) {
@@ -62,7 +62,8 @@ function CreateChannel() {
   }, [data, form]);
 
   const onSubmit: SubmitHandler<Form> = async (values) => {
-    console.log('123');
+    setIsLoading(true);
+
     const url = new URL(window.location.origin + ApiRoute.Channel);
     url.searchParams.set('serverId', data.server?.id || '');
     url.searchParams.set('channelId', data.channel?.channel?.id || '');
@@ -73,13 +74,19 @@ function CreateChannel() {
     });
 
     if (!response.ok) {
-      to404();
-    } else {
-      startTransition(() => {
-        handleClose();
-        router.refresh();
+      toast({
+        title: 'Что то пошло не так',
+        variant: 'destructive'
       });
+      setIsLoading(false);
+    } else {
+      handleClose();
     }
+
+    startTransition(() => {
+      setIsLoading(false);
+      router.refresh();
+    });
   };
 
   const handleDelete = async () => {
@@ -87,21 +94,26 @@ function CreateChannel() {
     const url = new URL(window.location.origin + ApiRoute.Channel);
     url.searchParams.set('serverId', data.server?.id || '');
     url.searchParams.set('channelId', data.channel?.channel?.id || '');
-    console.log(url);
+
     const response = await fetch(url, {
       method: 'DELETE'
     });
 
+    console.log(isLoading);
     if (!response.ok) {
-      to404();
-    } else {
-      startTransition(() => {
-        handleClose();
-        router.refresh();
+      toast({
+        title: 'Что то пошло не так',
+        variant: 'destructive'
       });
+    } else {
+      handleClose();
     }
 
-    setIsLoading(false);
+    startTransition(() => {
+      setIsLoading(false);
+      router.refresh();
+      router.push(AppRoutes.App + '/' + data.server?.id);
+    });
   };
 
   const handleClose = () => {
@@ -118,7 +130,7 @@ function CreateChannel() {
           {data.channel?.method === 'POST' && <DialogTitle> Создать канал</DialogTitle>}
         </DialogHeader>
         {data.channel?.method === 'DELETE' && (
-          <Button onClick={handleDelete}>
+          <Button onClick={handleDelete} disabled={isLoading}>
             {isLoading ? (
               <Loader2 className={'animate-spin'} />
             ) : (
@@ -174,8 +186,8 @@ function CreateChannel() {
                   </FormItem>
                 )}
               />
-              <Button className={'relative'}>
-                {form.formState.isSubmitting ? (
+              <Button className={'relative'} disabled={isLoading || !modal}>
+                {isLoading ? (
                   <Loader2 className={'animate-spin'} />
                 ) : (
                   methodToName[data.channel?.method || 'POST']

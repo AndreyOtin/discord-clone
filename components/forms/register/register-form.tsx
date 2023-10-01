@@ -58,9 +58,7 @@ function RegisterForm(props: RegisterFormProps) {
 
   const handleGithubClick = async () => {
     setIsLoading(true);
-    const res = await signIn('github', {
-      redirect: false
-    });
+    const res = await signIn('github');
 
     if (res && res.error) {
       setError(true);

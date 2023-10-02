@@ -48,3 +48,21 @@ export const callAll =
   ) =>
   (...args: T) =>
     fns.forEach((fn) => fn?.(...args));
+
+export class CustomError {
+  _data;
+
+  constructor(message: { message: string }) {
+    this._data = message;
+  }
+
+  get data() {
+    let mes = this._data.message;
+    if (typeof mes !== 'string') {
+      mes = 'Что то пошло не так';
+    }
+    this._data.message = mes;
+
+    return this._data;
+  }
+}

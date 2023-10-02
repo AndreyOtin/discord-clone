@@ -47,7 +47,7 @@ export const DELETE = async (req: Request) => {
 
     return NextResponse.json(server, { status: 200 });
   } catch {
-    return NextResponse.json({ message: 'Произошла ошибка' }, { status: 500 });
+    return NextResponse.json('Не предвиденная ошибка', { status: 500 });
   }
 };
 
@@ -99,6 +99,6 @@ export const PATCH = async (req: Request) => {
     });
     return NextResponse.json(server, { status: 200 });
   } catch {
-    return NextResponse.json({ message: 'Произошла ошибка' }, { status: 500 });
+    return NextResponse.json('Не предвиденная ошибка', { status: 500 });
   }
 };

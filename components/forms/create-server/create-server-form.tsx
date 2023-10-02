@@ -18,6 +18,7 @@ import { useRouter } from 'next/navigation';
 import { useModalContext } from '@/contexts/modal-context/modal-context';
 import { Server } from '@prisma/client';
 import { useToast } from '@/components/ui/use-toast';
+import { CustomError } from '@/lib/utils';
 
 const defaultValues = {
   serverName: '',
@@ -62,23 +63,37 @@ function CreateServerForm({ server }: CreateServerFormProps) {
       })
     };
 
-    const res = await fetch(ApiRoute.CreateServer, server ? patchConfig : postConfig);
+    try {
+      const response = await fetch(ApiRoute.CreateServer, server ? patchConfig : postConfig);
 
-    if (res.ok) {
-      const data = await res.json();
+      if (!response.ok) {
+        const message = await response.json();
+        throw new CustomError({ message });
+      }
+
       closeModal();
-
+      const data = await response.json();
       startTransition(() => {
-        setIsLoading(false);
         router.push(AppRoutes.App + `/${data.id}`);
         router.refresh();
       });
-    } else {
+    } catch (e) {
+      if (e instanceof CustomError) {
+        return toast({
+          title: 'Что то пошло не так',
+          description: e.data.message,
+          variant: 'destructive'
+        });
+      }
+
       toast({
         title: 'Что то пошло не так',
         variant: 'destructive'
       });
-      setIsLoading(false);
+    } finally {
+      startTransition(() => {
+        setIsLoading(false);
+      });
     }
   };
 

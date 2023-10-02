@@ -57,8 +57,7 @@ export const POST = async (req: Request) => {
 
     return NextResponse.json(server, { status: 200 });
   } catch (e) {
-    console.log(e);
-    return NextResponse.json({ message: e }, { status: 500 });
+    return NextResponse.json('Не предвиденная ошибка', { status: 500 });
   }
 };
 
@@ -127,8 +126,7 @@ export const PATCH = async (req: Request) => {
 
     return NextResponse.json(server, { status: 200 });
   } catch (e) {
-    console.log(e);
-    return NextResponse.json({ message: e }, { status: 500 });
+    return NextResponse.json('Не предвиденная ошибка', { status: 500 });
   }
 };
 
@@ -189,7 +187,6 @@ export const DELETE = async (req: Request) => {
 
     return NextResponse.json(server, { status: 200 });
   } catch (e) {
-    console.log(e);
-    return NextResponse.json({ message: e }, { status: 500 });
+    return NextResponse.json('Не предвиденная ошибка', { status: 500 });
   }
 };

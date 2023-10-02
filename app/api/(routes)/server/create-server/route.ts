@@ -47,7 +47,7 @@ export const POST = async (req: Request) => {
       message = 'Произошла ошибка';
     }
 
-    return NextResponse.json({ message }, { status: 400 });
+    return NextResponse.json(message, { status: 400 });
   }
 };
 
@@ -85,6 +85,6 @@ export const PATCH = async (req: Request) => {
       message = 'Произошла ошибка';
     }
 
-    return NextResponse.json({ message }, { status: 400 });
+    return NextResponse.json(message, { status: 400 });
   }
 };

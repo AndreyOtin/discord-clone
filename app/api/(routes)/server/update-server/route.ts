@@ -23,6 +23,6 @@ export const PATCH = async (req: Request) => {
     });
     return NextResponse.json({ server }, { status: 200 });
   } catch {
-    return NextResponse.json({ message: 'Произошла ошибка' }, { status: 400 });
+    return NextResponse.json('Произошла ошибка', { status: 500 });
   }
 };

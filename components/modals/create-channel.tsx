@@ -28,7 +28,7 @@ import { ApiRoute, AppRoutes } from '@/consts/enums';
 import { createChannelSchema } from '@/consts/schemas';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { cn } from '@/lib/utils';
+import { cn, CustomError } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
 
 type Form = z.infer<typeof createChannelSchema>;
@@ -68,25 +68,40 @@ function CreateChannel() {
     url.searchParams.set('serverId', data.server?.id || '');
     url.searchParams.set('channelId', data.channel?.channel?.id || '');
 
-    const response = await fetch(url, {
-      method: data.channel ? data.channel.method : 'POST',
-      body: JSON.stringify(values)
-    });
+    try {
+      const response = await fetch(url, {
+        method: data.channel ? data.channel.method : 'POST',
+        body: JSON.stringify(values)
+      });
 
-    if (!response.ok) {
+      if (!response.ok) {
+        const message = await response.json();
+        throw new CustomError({ message });
+      }
+
+      handleClose();
+      startTransition(() => {
+        router.refresh();
+        setIsLoading(false);
+      });
+    } catch (e) {
+      if (e instanceof CustomError) {
+        return toast({
+          title: 'Что то пошло не так',
+          description: e.data.message,
+          variant: 'destructive'
+        });
+      }
+
       toast({
         title: 'Что то пошло не так',
         variant: 'destructive'
       });
-      setIsLoading(false);
-    } else {
-      handleClose();
+    } finally {
+      startTransition(() => {
+        setIsLoading(false);
+      });
     }
-
-    startTransition(() => {
-      router.refresh();
-      setIsLoading(false);
-    });
   };
 
   const handleDelete = async () => {
@@ -97,24 +112,39 @@ function CreateChannel() {
     url.searchParams.set('serverId', data.server?.id || '');
     url.searchParams.set('channelId', data.channel?.channel?.id || '');
 
-    const response = await fetch(url, {
-      method: 'DELETE'
-    });
+    try {
+      const response = await fetch(url, {
+        method: 'DELETE'
+      });
 
-    if (!response.ok) {
+      if (!response.ok) {
+        const message = await response.json();
+        throw new CustomError({ message });
+      }
+
+      handleClose();
+      startTransition(() => {
+        router.refresh();
+        router.push(AppRoutes.App + '/' + data.server?.id);
+      });
+    } catch (e) {
+      if (e instanceof CustomError) {
+        return toast({
+          title: 'Что то пошло не так',
+          description: e.data.message,
+          variant: 'destructive'
+        });
+      }
+
       toast({
         title: 'Что то пошло не так',
         variant: 'destructive'
       });
-    } else {
-      handleClose();
+    } finally {
+      startTransition(() => {
+        setIsLoading(false);
+      });
     }
-
-    startTransition(() => {
-      setIsLoading(false);
-      router.refresh();
-      router.push(AppRoutes.App + '/' + data.server?.id);
-    });
   };
 
   const handleClose = () => {

@@ -108,6 +108,7 @@ function CreateChannel() {
       router.refresh();
       router.push(AppRoutes.App + '/' + data.server?.id);
       handleClose();
+      window.history.pushState({ state: data.channel?.channel?.id }, '');
     }
 
     startTransition(() => {

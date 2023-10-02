@@ -20,7 +20,7 @@ type ChannelProps = {
 };
 
 function ChannelSection({ title, channels, className, type, server }: ChannelProps) {
-  const { openModal } = useModalContext();
+  const { openModal, modal } = useModalContext();
 
   return (
     <div className={className}>

@@ -81,11 +81,11 @@ function CreateChannel() {
       setIsLoading(false);
     } else {
       handleClose();
+      router.refresh();
     }
 
     startTransition(() => {
       setIsLoading(false);
-      router.refresh();
     });
   };
 
@@ -99,20 +99,19 @@ function CreateChannel() {
       method: 'DELETE'
     });
 
-    console.log(isLoading);
     if (!response.ok) {
       toast({
         title: 'Что то пошло не так',
         variant: 'destructive'
       });
     } else {
+      router.refresh();
+      router.push(AppRoutes.App + '/' + data.server?.id);
       handleClose();
     }
 
     startTransition(() => {
       setIsLoading(false);
-      router.refresh();
-      router.push(AppRoutes.App + '/' + data.server?.id);
     });
   };
 

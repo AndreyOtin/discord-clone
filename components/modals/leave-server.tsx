@@ -33,10 +33,10 @@ function LeaveServer() {
       setIsLoading(false);
     } else {
       closeModal();
-    }
-    startTransition(() => {
       router.refresh();
       router.push(AppRoutes.App);
+    }
+    startTransition(() => {
       setIsLoading(false);
     });
   };

@@ -125,14 +125,14 @@ function CreateServerForm({ server }: CreateServerFormProps) {
                     onUploadError={({ message }) => {
                       form.setError('serverImage', { message });
                     }}
-                    config={{ mode: 'auto' }}
+                    config={{ mode: 'manual' }}
                     content={{
                       label: 'Перетащите или выберите картинку для сервера',
                       allowedContent: 'картинкa не более 4 Mb',
                       button: 'Загрузить картинку'
                     }}
                     appearance={{
-                      button: 'hidden'
+                      button: 'w-1/2'
                     }}
                     endpoint={'imageUploader'}
                   />
@@ -153,7 +153,7 @@ function CreateServerForm({ server }: CreateServerFormProps) {
             </FormItem>
           )}
         />
-        <Button className={'mx-auto my-4 block flex gap-x-2'} disabled={isLoading}>
+        <Button className={'mx-auto my-4 flex gap-x-2'} disabled={isLoading}>
           {isLoading && <Loader2 className={'animate-spin'} />}
           {server ? 'Обновить' : 'Создать'}
         </Button>

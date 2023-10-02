@@ -21,8 +21,7 @@ type ChannelProps = {
 };
 
 function ChannelSection({ title, channels, className, type, server }: ChannelProps) {
-  const { openModal } = useModalContext();
-  const { state } = window.history.state;
+  const { openModal, data } = useModalContext();
 
   return (
     <div className={className}>
@@ -37,13 +36,13 @@ function ChannelSection({ title, channels, className, type, server }: ChannelPro
       </div>
       <ul>
         {channels.map((c) => {
-          const deleted = state && state === c.id;
+          const deleted = data.deletedId === c.id;
 
           return (
             <Link
               key={c.id}
               href={`${AppRoutes.App}/${server.id}/channel/${c.id}`}
-              className={cn(deleted && 'opacity-50', 'group')}
+              className={cn(deleted && 'opacity-50', 'group relative')}
             >
               <li
                 className={
@@ -61,17 +60,22 @@ function ChannelSection({ title, channels, className, type, server }: ChannelPro
                 )}
 
                 {c.name !== 'general' && (
-                  <div className={'ml-auto space-x-1 flex-shrink-0 flex items-center pl-0.5'}>
+                  <div
+                    className={
+                      'ml-auto space-x-1 flex-shrink-0 flex items-center pl-0.5 relative z-10'
+                    }
+                  >
                     <button
                       className={cn(deleted && 'text-amber-500/90')}
                       disabled={deleted}
-                      onClick={() =>
+                      onClick={(e) => {
+                        e.preventDefault();
                         openModal('createChannel', {
                           server,
                           type,
                           channel: { channel: c, method: 'PATCH' }
-                        })
-                      }
+                        });
+                      }}
                     >
                       <span className={'sr-only'}>Изменить канала</span>
                       <Edit className={'aspect-square w-4 hover:text-blue-500'} />
@@ -79,13 +83,14 @@ function ChannelSection({ title, channels, className, type, server }: ChannelPro
                     <button
                       disabled={deleted}
                       className={cn(deleted && 'text-amber-500/90')}
-                      onClick={() =>
+                      onClick={(e) => {
+                        e.preventDefault();
                         openModal('createChannel', {
                           server,
                           type,
                           channel: { channel: c, method: 'DELETE' }
-                        })
-                      }
+                        });
+                      }}
                     >
                       <span className={'sr-only'}>Удалить канала</span>
                       <Trash className={'aspect-square w-4 hover:text-blue-500'} />

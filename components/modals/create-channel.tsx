@@ -47,7 +47,7 @@ function CreateChannel() {
       type: 'TEXT'
     }
   });
-  const { modal, closeModal, data } = useModalContext();
+  const { modal, closeModal, data, setDeletingId } = useModalContext();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -81,16 +81,18 @@ function CreateChannel() {
       setIsLoading(false);
     } else {
       handleClose();
-      router.refresh();
     }
 
     startTransition(() => {
+      router.refresh();
       setIsLoading(false);
     });
   };
 
   const handleDelete = async () => {
     setIsLoading(true);
+    setDeletingId(data.channel?.channel?.id || '');
+
     const url = new URL(window.location.origin + ApiRoute.Channel);
     url.searchParams.set('serverId', data.server?.id || '');
     url.searchParams.set('channelId', data.channel?.channel?.id || '');
@@ -105,14 +107,13 @@ function CreateChannel() {
         variant: 'destructive'
       });
     } else {
-      router.refresh();
-      router.push(AppRoutes.App + '/' + data.server?.id);
       handleClose();
-      window.history.pushState({ state: data.channel?.channel?.id }, '');
     }
 
     startTransition(() => {
       setIsLoading(false);
+      router.refresh();
+      router.push(AppRoutes.App + '/' + data.server?.id);
     });
   };
 
@@ -131,11 +132,8 @@ function CreateChannel() {
         </DialogHeader>
         {data.channel?.method === 'DELETE' && (
           <Button onClick={handleDelete} disabled={isLoading}>
-            {isLoading ? (
-              <Loader2 className={'animate-spin'} />
-            ) : (
-              methodToName[data.channel?.method || 'POST']
-            )}
+            {isLoading && <Loader2 className={'animate-spin'} />}
+            {methodToName[data.channel?.method || 'POST']}
           </Button>
         )}
         {data.channel?.method !== 'DELETE' && (
@@ -187,11 +185,8 @@ function CreateChannel() {
                 )}
               />
               <Button className={'relative'} disabled={isLoading || !modal}>
-                {isLoading ? (
-                  <Loader2 className={'animate-spin'} />
-                ) : (
-                  methodToName[data.channel?.method || 'POST']
-                )}
+                {isLoading && <Loader2 className={'animate-spin'} />}
+                {methodToName[data.channel?.method || 'POST']}
               </Button>
             </form>
           </Form>

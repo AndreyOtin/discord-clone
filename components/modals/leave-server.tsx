@@ -29,15 +29,14 @@ function LeaveServer() {
         title: 'Что то пошло не так',
         variant: 'destructive'
       });
-
-      setIsLoading(false);
     } else {
       closeModal();
-      router.refresh();
-      router.push(AppRoutes.App);
     }
+
     startTransition(() => {
       setIsLoading(false);
+      router.refresh();
+      router.push(AppRoutes.App);
     });
   };
 

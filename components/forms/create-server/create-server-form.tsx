@@ -67,10 +67,11 @@ function CreateServerForm({ server }: CreateServerFormProps) {
     if (res.ok) {
       const data = await res.json();
       closeModal();
-      router.push(AppRoutes.App + `/${data.id}`);
-      router.refresh();
+
       startTransition(() => {
         setIsLoading(false);
+        router.push(AppRoutes.App + `/${data.id}`);
+        router.refresh();
       });
     } else {
       toast({

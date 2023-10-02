@@ -1,6 +1,14 @@
 'use client';
 
-import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import CreateServer from '@/components/modals/create-server';
 import InvitePeople from '@/components/modals/invite-people';
 import EditServer from '@/components/modals/edit-server';
@@ -21,6 +29,7 @@ const MODALS = [
 ] as const;
 
 interface Data {
+  deletedId?: string;
   server?: ServerWithLinksAndUser;
   type?: ChannelType;
   channel?: {
@@ -34,6 +43,7 @@ interface ModalContext {
   openModal: (modal: Modals, data?: Data) => void;
   closeModal: () => void;
   data: Data;
+  setDeletingId: (id: string) => void;
 }
 
 type Modals = ModalContext['modal'];
@@ -49,19 +59,28 @@ function ModalProvider({ children }: { children: ReactNode }) {
     setMounted(true);
   }, []);
 
+  const openModal = useCallback((modal: Modals, data?: Data) => {
+    setModal(modal);
+    setData(data || {});
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setModal(null);
+  }, []);
+
+  const setDeletingId = useCallback((id: string) => {
+    setData((data) => ({ ...data, deletedId: id }) as Data);
+  }, []);
+
   const values = useMemo(() => {
     return {
       data,
       modal,
-      openModal(modal: Modals, data?: Data) {
-        setModal(modal);
-        setData(data || {});
-      },
-      closeModal() {
-        setModal(null);
-      }
+      openModal,
+      closeModal,
+      setDeletingId
     };
-  }, [modal, data]);
+  }, [data, modal, openModal, closeModal, setDeletingId]);
 
   if (!mounted) {
     return null;

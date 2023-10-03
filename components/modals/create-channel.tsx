@@ -1,6 +1,6 @@
 'use client';
 
-import React, { startTransition, useEffect, useState } from 'react';
+import React, { useEffect, useState, useTransition } from 'react';
 import { useModalContext } from '@/contexts/modal-context/modal-context';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -51,6 +51,22 @@ function CreateChannel() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const [isPending, startTransition] = useTransition();
+
+  const ref = (el: HTMLElement | null) => console.dir(el);
+
+  useEffect(() => {
+    if (!isLoading) {
+      return;
+    }
+
+    if (isPending) {
+      return;
+    }
+
+    handleClose();
+    setTimeout(() => setIsLoading(false), 500);
+  }, [isPending]);
 
   useEffect(() => {
     if (data.type) {
@@ -79,10 +95,8 @@ function CreateChannel() {
         throw new CustomError({ message });
       }
 
-      handleClose();
       startTransition(() => {
         router.refresh();
-        setIsLoading(false);
       });
     } catch (e) {
       if (e instanceof CustomError) {
@@ -97,10 +111,7 @@ function CreateChannel() {
         title: 'Что то пошло не так',
         variant: 'destructive'
       });
-    } finally {
-      startTransition(() => {
-        setIsLoading(false);
-      });
+      setIsLoading(false);
     }
   };
 
@@ -122,7 +133,6 @@ function CreateChannel() {
         throw new CustomError({ message });
       }
 
-      handleClose();
       startTransition(() => {
         router.refresh();
         router.push(AppRoutes.App + '/' + data.server?.id);
@@ -140,10 +150,7 @@ function CreateChannel() {
         title: 'Что то пошло не так',
         variant: 'destructive'
       });
-    } finally {
-      startTransition(() => {
-        setIsLoading(false);
-      });
+      setIsLoading(false);
     }
   };
 
@@ -154,6 +161,7 @@ function CreateChannel() {
 
   return (
     <Dialog open={modal === 'createChannel'} onOpenChange={handleClose}>
+      <div ref={ref}></div>
       <DialogContent overlayClassName="bg-background/2">
         <DialogHeader className={'space-y-4'}>
           {data.channel?.method === 'DELETE' && <DialogTitle>Удалить канал</DialogTitle>}

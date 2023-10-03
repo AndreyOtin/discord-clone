@@ -9,8 +9,6 @@ import MainHeader from '@/components/main-header/main-header';
 import ChannelMessages from '@/components/channel/channel-messages';
 import MessageForm from '@/components/forms/message/message-form';
 
-export const dynamic = 'force-dynamic';
-
 async function ChannelPage({ params }: { params: { id: string; channelId: string } }) {
   await checkAuth();
   const server = await findServer(params.id);

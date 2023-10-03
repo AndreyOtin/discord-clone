@@ -53,8 +53,6 @@ function CreateChannel() {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
 
-  const ref = (el: HTMLElement | null) => console.dir(el);
-
   useEffect(() => {
     if (!isLoading) {
       return;
@@ -161,7 +159,6 @@ function CreateChannel() {
 
   return (
     <Dialog open={modal === 'createChannel'} onOpenChange={handleClose}>
-      <div ref={ref}></div>
       <DialogContent overlayClassName="bg-background/2">
         <DialogHeader className={'space-y-4'}>
           {data.channel?.method === 'DELETE' && <DialogTitle>Удалить канал</DialogTitle>}

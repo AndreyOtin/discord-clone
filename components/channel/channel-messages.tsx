@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import React, { startTransition, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState, useTransition } from 'react';
 import { useSocket } from '@/contexts/socket-context/socket-context';
 import ChannelMessage from '@/components/channel-message/channel-message';
 import { MessageWithUser } from '@/types/prisma';
@@ -20,12 +20,13 @@ type ChannelProps = {
 };
 
 function ChannelMessages({ messages, className, channel }: ChannelProps) {
-  const router = useRouter();
   const { socket } = useSocket();
   const [channelMessages, setChannelMessages] = useState(messages);
   const [error, setError] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const isMounted = useRef(false);
+  const router = useRouter();
+  const [, startTransition] = useTransition();
 
   useLayoutEffect(() => {
     let config: 'smooth' | 'instant' = 'smooth';
@@ -48,12 +49,14 @@ function ChannelMessages({ messages, className, channel }: ChannelProps) {
     socket.on(ioEvent, (message: MessageWithUser) => {
       startTransition(() => {
         setChannelMessages((s) => [...s, message]);
+        router.refresh();
       });
     });
 
     socket.on(IoEvent.ChatError, () => {
       startTransition(() => {
         setError(true);
+        router.refresh();
       });
     });
 
